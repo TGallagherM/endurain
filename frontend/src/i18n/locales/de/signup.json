@@ -5,6 +5,8 @@
   "username": "Benutzername",
   "email": "E-Mail",
   "password": "Passwort",
+  "confirmPassword": "Passwort bestätigen",
+  "passwordMismatch": "Passwörter stimmen nicht überein",
   "showPassword": "Passwort anzeigen",
   "hidePassword": "Passwort verbergen",
   "showOptionalFields": "Optionale Felder anzeigen",

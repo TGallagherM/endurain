@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n'
 import type { ManagedUser, UserAccessType } from '@/features/users/types'
 import type { Schemas } from '@/types'
 
+import PasswordInput from '@/features/security/components/PasswordInput.vue'
 import { FormDialog } from '@/components/ui/form-dialog'
 import { FormField } from '@/components/ui/form-field'
 import { Input } from '@/components/ui/input'
@@ -12,9 +13,15 @@ import { inputFieldClass } from '@/components/ui/input/fieldClasses'
 import { Select } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { useForm } from '@/composables/useForm'
+import { usePublicServerSettings } from '@/features/config/composables/usePublicServerSettings'
 import { HttpError } from '@/services/http'
 import { cmToFeetInches } from '@/utils/units'
-import { compose, email, maxLength, minLength, pattern, required } from '@/utils/validators'
+import {
+  buildPasswordRequirements,
+  isValidPassword,
+  resolvePasswordMinLength,
+} from '@/utils/validation'
+import { compose, email, maxLength, pattern, required } from '@/utils/validators'
 import {
   CURRENCY_OPTIONS,
   GENDER_OPTIONS,
@@ -50,7 +57,7 @@ const languageCodes = computed(() =>
 const createMutation = useCreateUserMutation()
 const updateMutation = useUpdateUserMutation()
 
-const PASSWORD_MIN = 8
+const { serverSettings } = usePublicServerSettings()
 
 /**
  * Form shape — the full set of admin-editable user fields. `password` is only
@@ -62,6 +69,7 @@ interface UserFormValues {
   username: string
   email: string
   password: string
+  confirmPassword: string
   accessType: UserAccessType
   active: boolean
   emailVerified: boolean
@@ -86,6 +94,7 @@ function defaultValues(): UserFormValues {
     username: '',
     email: '',
     password: '',
+    confirmPassword: '',
     accessType: 'regular',
     active: true,
     emailVerified: true,
@@ -166,6 +175,11 @@ async function submitForm(formValues: UserFormValues): Promise<void> {
   } catch (error) {
     if (error instanceof HttpError && error.status === 409) {
       emit('error', t('settings.users.form.conflict'))
+    } else if (!props.user && error instanceof HttpError && error.status === 400) {
+      // Create-only: the backend's own password-policy check is the only
+      // documented 400 this endpoint raises, so it's safe to surface a
+      // password-specific message here (edits never send a password).
+      emit('error', t('settings.users.form.passwordInvalid'))
     } else {
       emit('error', t('settings.users.form.saveError'))
     }
@@ -177,6 +191,30 @@ async function submitForm(formValues: UserFormValues): Promise<void> {
 // `useForm(...)` call, so referencing it inside that call's validators would be
 // a circular reference TypeScript rejects.
 const activeUnits = ref<Schemas['Units']>('metric')
+
+// Same circular-reference constraint as `activeUnits` above: the password
+// validator can't read `values.accessType` from the same `useForm(...)` call,
+// so the selected access type (which determines the length policy) is
+// mirrored into its own ref, kept in sync via the watch below.
+const activeAccessType = ref<UserAccessType>('regular')
+
+/** Password policy mirrored from the server, scoped to the selected access type. */
+const passwordRequirements = computed(() =>
+  buildPasswordRequirements(
+    serverSettings.value.password_type,
+    resolvePasswordMinLength(
+      serverSettings.value.password_length_regular_users,
+      serverSettings.value.password_length_admin_users,
+      activeAccessType.value,
+    ),
+  ),
+)
+/** Human-readable hint describing the active password policy. */
+const passwordHint = computed(() =>
+  serverSettings.value.password_type === 'length_only'
+    ? t('settings.users.form.passwordHintLength', { min: passwordRequirements.value.minLength })
+    : t('settings.users.form.passwordHintStrict', { min: passwordRequirements.value.minLength }),
+)
 
 const { values, errors, isValid, isSubmitting, handleSubmit, handleBlur, reset } =
   useForm<UserFormValues>({
@@ -202,8 +240,18 @@ const { values, errors, isValid, isSubmitting, handleSubmit, handleBlur, reset }
           ? null
           : compose(
               required<string>(t('settings.users.form.passwordRequired')),
-              minLength(PASSWORD_MIN, t('settings.users.form.passwordTooShort')),
+              (candidate: string) =>
+                isValidPassword(candidate, passwordRequirements.value)
+                  ? null
+                  : t('settings.users.form.passwordInvalid'),
             )(value),
+      // Required only when creating; the mismatch itself is surfaced via the
+      // `passwordsMatch`/`confirmPasswordError` computeds below (a validator here
+      // can't safely read the sibling `password` field — see `values` note above).
+      confirmPassword: (value: string) =>
+        props.user
+          ? null
+          : required<string>(t('settings.users.form.confirmPasswordRequired'))(value),
       // Height is captured per unit system and only the active system's inputs
       // are rendered. Skip the imperial validators in metric mode (and vice
       // versa) so a hidden field's seed value can't silently fail validation and
@@ -223,12 +271,35 @@ const { values, errors, isValid, isSubmitting, handleSubmit, handleBlur, reset }
 const isEditing = computed(() => props.user !== null)
 const isMetric = computed(() => values.units === 'metric')
 
+// Only relevant when creating (the password fields are hidden on edit); a
+// blank confirm field isn't yet a mismatch, it just hasn't been filled in.
+const passwordsMatch = computed(
+  () =>
+    isEditing.value ||
+    (values.confirmPassword.length > 0 && values.confirmPassword === values.password),
+)
+const confirmPasswordError = computed(() =>
+  values.confirmPassword.length > 0 && values.confirmPassword !== values.password
+    ? t('settings.users.form.passwordMismatch')
+    : undefined,
+)
+
 // Keep `activeUnits` in step with the unit selector so the height validators
 // re-run against the correct system whenever the user toggles units.
 watch(
   () => values.units,
   (units) => {
     activeUnits.value = units
+  },
+  { immediate: true },
+)
+// Keep `activeAccessType` in step with the access-type selector so the
+// password validator re-runs against the correct length policy whenever the
+// admin toggles Regular/Admin.
+watch(
+  () => values.accessType,
+  (accessType) => {
+    activeAccessType.value = accessType
   },
   { immediate: true },
 )
@@ -283,7 +354,7 @@ watch(open, (isOpen) => {
     :cancel-label="t('settings.users.form.cancel')"
     :close-label="t('settings.users.form.close')"
     :submitting="isSubmitting"
-    :can-submit="isValid"
+    :can-submit="isValid && passwordsMatch"
     content-class="max-w-2xl"
     @submit="handleSubmit"
   >
@@ -359,21 +430,42 @@ watch(open, (isOpen) => {
         :label="t('settings.users.form.password')"
         :error="errors.password"
         :placeholder="t('settings.users.form.password')"
-        :hint="t('settings.users.form.passwordHint')"
+        :hint="passwordHint"
         required
       >
         <template #default="{ fieldId, describedBy, invalid, placeholder }">
-          <Input
+          <PasswordInput
             :id="fieldId"
             v-model="values.password"
             :aria-describedby="describedBy"
             :aria-invalid="invalid"
-            type="password"
             name="new-password"
             autocomplete="new-password"
             :placeholder="placeholder"
             :disabled="isSubmitting"
             @blur="handleBlur('password')"
+          />
+        </template>
+      </FormField>
+
+      <FormField
+        v-if="!isEditing"
+        class="sm:col-span-2"
+        :label="t('settings.users.form.confirmPassword')"
+        :placeholder="t('settings.users.form.confirmPassword')"
+        :error="confirmPasswordError"
+        required
+      >
+        <template #default="{ fieldId, describedBy, invalid, placeholder }">
+          <PasswordInput
+            :id="fieldId"
+            v-model="values.confirmPassword"
+            :aria-describedby="describedBy"
+            :aria-invalid="invalid"
+            name="confirm-password"
+            autocomplete="new-password"
+            :placeholder="placeholder"
+            :disabled="isSubmitting"
           />
         </template>
       </FormField>

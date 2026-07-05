@@ -12,12 +12,18 @@ import { Switch } from '@/components/ui/switch'
 import { useToasts } from '@/composables/useToasts'
 import { usePublicServerSettings } from '@/features/config/composables/usePublicServerSettings'
 import { HttpError } from '@/services/http'
-import { buildPasswordRequirements, isValidPassword } from '@/utils/validation'
+import {
+  buildPasswordRequirements,
+  isValidPassword,
+  resolvePasswordMinLength,
+} from '@/utils/validation'
 import { useChangePasswordMutation } from '@/features/security/composables/useSecurity'
 
 const props = defineProps<{
   /** Whether the account has MFA enabled (gates the MFA-code field). */
   mfaEnabled: boolean
+  /** The account's access type, so the right length policy is enforced. */
+  accessType: string
 }>()
 
 const { t } = useI18n()
@@ -34,7 +40,11 @@ const revokeOtherSessions = ref(false)
 const requirements = computed(() =>
   buildPasswordRequirements(
     serverSettings.value.password_type,
-    serverSettings.value.password_length_regular_users,
+    resolvePasswordMinLength(
+      serverSettings.value.password_length_regular_users,
+      serverSettings.value.password_length_admin_users,
+      props.accessType,
+    ),
   ),
 )
 const requirementsHint = computed(() =>

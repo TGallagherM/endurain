@@ -5,6 +5,8 @@
   "username": "Nume de utilizator",
   "email": "E-mail",
   "password": "Parolă",
+  "confirmPassword": "Confirmă parola",
+  "passwordMismatch": "Parolele nu coincid",
   "showPassword": "Arată parola",
   "hidePassword": "Ascunde parola",
   "showOptionalFields": "Arată câmpurile opționale",

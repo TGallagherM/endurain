@@ -2941,6 +2941,7 @@ export interface paths {
          *
          *     Raises:
          *         HTTPException: 400 if token is invalid or expired.
+         *         HTTPException: 422 if the new password fails the account's password policy.
          *         HTTPException: 500 if password reset fails.
          */
         post: operations["confirm_password_reset_api_v1_password_reset_confirm_post"];

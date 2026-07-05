@@ -2,7 +2,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Eye, EyeOff, LoaderCircle } from '@lucide/vue'
+import { LoaderCircle } from '@lucide/vue'
 
 import ForgotPasswordDialog from '@/features/auth/components/ForgotPasswordDialog.vue'
 import AppLogo from '@/components/AppLogo.vue'
@@ -17,6 +17,7 @@ import {
   useLoginRouteMessages,
 } from '@/features/auth/composables/useLoginRouteMessages'
 import { usePublicServerSettings } from '@/features/config/composables/usePublicServerSettings'
+import PasswordInput from '@/features/security/components/PasswordInput.vue'
 import { useSafeRedirect } from '@/composables/useSafeRedirect'
 import { useSsoLogin } from '@/features/auth/composables/useSsoLogin'
 import { useToasts } from '@/composables/useToasts'
@@ -38,7 +39,6 @@ const username = ref('')
 const password = ref('')
 const mfaCode = ref('')
 const pendingUsername = ref('')
-const showPassword = ref(false)
 const forceLocalLogin = ref(false)
 const isLoading = ref(false)
 const isForgotPasswordOpen = ref(false)
@@ -248,6 +248,7 @@ onMounted(async () => {
               type="text"
               autocomplete="username"
               required
+              :placeholder="t('login.username')"
               :disabled="isLoading"
             />
           </div>
@@ -256,27 +257,14 @@ onMounted(async () => {
             <Label for="login-password">
               {{ t('login.password') }}
             </Label>
-            <div class="relative">
-              <Input
-                id="login-password"
-                v-model="password"
-                class="w-full pe-10"
-                name="password"
-                :type="showPassword ? 'text' : 'password'"
-                autocomplete="current-password"
-                required
-                :disabled="isLoading"
-              />
-              <button
-                type="button"
-                class="absolute end-2 top-1/2 inline-flex size-7 -translate-y-1/2 items-center justify-center rounded-input text-muted-foreground hover:bg-accent hover:text-accent-foreground focus:outline-none focus-visible:ring-3 focus-visible:ring-ring/30"
-                :aria-label="showPassword ? t('login.hidePassword') : t('login.showPassword')"
-                @click="showPassword = !showPassword"
-              >
-                <EyeOff v-if="showPassword" class="size-4" />
-                <Eye v-else class="size-4" />
-              </button>
-            </div>
+            <PasswordInput
+              id="login-password"
+              v-model="password"
+              name="password"
+              autocomplete="current-password"
+              :placeholder="t('login.password')"
+              :disabled="isLoading"
+            />
           </div>
         </template>
 

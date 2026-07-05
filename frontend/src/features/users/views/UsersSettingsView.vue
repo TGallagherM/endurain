@@ -357,6 +357,7 @@ function confirmDelete(): void {
       v-model:open="isPasswordOpen"
       :user-id="passwordUser?.id ?? 0"
       :username="passwordUser?.username ?? ''"
+      :access-type="passwordUser?.accessType ?? 'regular'"
       @success="onFormSuccess"
       @error="onFormError"
     />

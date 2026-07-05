@@ -138,6 +138,7 @@ def use_password_reset_token(
 
     Raises:
         HTTPException: 400 if the token is invalid or expired.
+        HTTPException: 422 if the new password fails the account's password policy.
         HTTPException: 500 if password update or token marking fails.
     """
     # Hash the provided token to find the database record
@@ -153,12 +154,23 @@ def use_password_reset_token(
     server_settings = server_settings_utils.get_server_settings_or_404(db)
     db_user = users_utils.get_user_by_id_or_404(token_user_id, db)
     access_type = users_schema.normalize_access_type(db_user.access_type)
-    hashed_password = auth_password_policy.validate_and_hash_for_user(
-        identity_service,
-        server_settings,
-        access_type,
-        new_password,
-    )
+    try:
+        hashed_password = auth_password_policy.validate_and_hash_for_user(
+            identity_service,
+            server_settings,
+            access_type,
+            new_password,
+        )
+    except HTTPException as err:
+        # Re-raised as 422 (distinct from the 400 above) so callers can tell a
+        # weak new password apart from an invalid/expired token instead of
+        # conflating both under the same status code.
+        if err.status_code == status.HTTP_400_BAD_REQUEST:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+                detail=err.detail,
+            ) from err
+        raise
 
     try:
         auth_credentials_crud.upsert_password_hash(

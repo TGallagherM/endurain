@@ -81,7 +81,11 @@ const mfaEnabled = computed(() => mfaStatusQuery.data.value?.enabled ?? false)
 
     <!-- Loaded -->
     <template v-else-if="profile">
-      <ChangePasswordCard v-if="profile.hasLocalPassword" :mfa-enabled="mfaEnabled" />
+      <ChangePasswordCard
+        v-if="profile.hasLocalPassword"
+        :mfa-enabled="mfaEnabled"
+        :access-type="profile.accessType"
+      />
       <MfaCard :has-local-password="profile.hasLocalPassword" />
       <LinkedAccountsCard
         :has-local-password="profile.hasLocalPassword"

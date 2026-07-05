@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest'
 
-import { buildPasswordRequirements, isValidEmail, isValidPassword } from '@/utils/validation'
+import {
+  buildPasswordRequirements,
+  isValidEmail,
+  isValidPassword,
+  resolvePasswordMinLength,
+} from '@/utils/validation'
 
 describe('isValidEmail', () => {
   it('accepts a well-formed address and ignores surrounding whitespace', () => {
@@ -60,5 +65,16 @@ describe('isValidPassword', () => {
   it('accepts any sufficiently long password under the length-only policy', () => {
     expect(isValidPassword('aaaaaaaa', lengthOnly)).toBe(true)
     expect(isValidPassword('aaaaaaa', lengthOnly)).toBe(false)
+  })
+})
+
+describe('resolvePasswordMinLength', () => {
+  it('picks the admin length for admin accounts', () => {
+    expect(resolvePasswordMinLength(8, 12, 'admin')).toBe(12)
+  })
+
+  it('picks the regular length for any other access type', () => {
+    expect(resolvePasswordMinLength(8, 12, 'regular')).toBe(8)
+    expect(resolvePasswordMinLength(8, 12, '')).toBe(8)
   })
 })

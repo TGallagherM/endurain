@@ -15,6 +15,7 @@ import { Input } from '@/components/ui/input'
 import { Select } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { useForm } from '@/composables/useForm'
+import PasswordInput from '@/features/security/components/PasswordInput.vue'
 import { HttpError } from '@/services/http'
 import {
   BUILTIN_PROVIDER_ICONS,
@@ -381,14 +382,13 @@ watch(open, (isOpen) => {
         :required="!isEditing"
       >
         <template #default="{ fieldId, describedBy, invalid }">
-          <Input
+          <PasswordInput
             :id="fieldId"
             v-model="values.clientSecret"
             :aria-describedby="describedBy"
             :aria-invalid="invalid"
             name="clientSecret"
-            type="password"
-            maxlength="512"
+            :maxlength="512"
             autocomplete="new-password"
             :placeholder="
               isEditing ? t('settings.idp.form.clientSecretPlaceholderEdit') : undefined

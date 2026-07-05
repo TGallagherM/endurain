@@ -363,6 +363,7 @@ function reject(): void {
         v-model:open="isPasswordOpen"
         :user-id="user.id"
         :username="user.username"
+        :access-type="user.accessType"
         @success="onPasswordSuccess"
         @error="onPasswordError"
       />

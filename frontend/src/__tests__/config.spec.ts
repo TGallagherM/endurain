@@ -23,6 +23,7 @@ const publicSettings: PublicServerSettings = {
   currency: 'euro',
   password_type: 'strict',
   password_length_regular_users: 8,
+  password_length_admin_users: 12,
   num_records_per_page: 25,
 }
 

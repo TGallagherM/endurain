@@ -5,6 +5,8 @@
   "username": "Потребителско име",
   "email": "Имейл",
   "password": "Парола",
+  "confirmPassword": "Потвърди паролата",
+  "passwordMismatch": "Паролите не съвпадат",
   "showPassword": "Покажи паролата",
   "hidePassword": "Скрий паролата",
   "showOptionalFields": "Покажи незадължителните полета",

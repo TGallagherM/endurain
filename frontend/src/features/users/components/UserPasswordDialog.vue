@@ -4,11 +4,15 @@ import { useI18n } from 'vue-i18n'
 
 import { FormDialog } from '@/components/ui/form-dialog'
 import { FormField } from '@/components/ui/form-field'
-import { Input } from '@/components/ui/input'
 import { useForm } from '@/composables/useForm'
 import { usePublicServerSettings } from '@/features/config/composables/usePublicServerSettings'
+import PasswordInput from '@/features/security/components/PasswordInput.vue'
 import { HttpError } from '@/services/http'
-import { buildPasswordRequirements, isValidPassword } from '@/utils/validation'
+import {
+  buildPasswordRequirements,
+  isValidPassword,
+  resolvePasswordMinLength,
+} from '@/utils/validation'
 import { compose, required } from '@/utils/validators'
 import { useChangeUserPasswordMutation } from '@/features/users/composables/useUsers'
 
@@ -19,6 +23,8 @@ const props = defineProps<{
   userId: number
   /** The target user's username, shown in the dialog copy. */
   username: string
+  /** The target user's access type, so the right length policy is enforced. */
+  accessType: string
 }>()
 
 const emit = defineEmits<{
@@ -31,11 +37,16 @@ const { t } = useI18n()
 const mutation = useChangeUserPasswordMutation()
 const { serverSettings } = usePublicServerSettings()
 
-/** Password policy mirrored from the server (length-only or strict). */
+/** Password policy mirrored from the server (length-only or strict), scoped
+ * to the target user's access tier. */
 const passwordRequirements = computed(() =>
   buildPasswordRequirements(
     serverSettings.value.password_type,
-    serverSettings.value.password_length_regular_users,
+    resolvePasswordMinLength(
+      serverSettings.value.password_length_regular_users,
+      serverSettings.value.password_length_admin_users,
+      props.accessType,
+    ),
   ),
 )
 /** Human-readable hint describing the active password policy. */
@@ -123,17 +134,18 @@ watch(open, (isOpen) => {
     <div class="flex flex-col gap-3">
       <FormField
         :label="t('settings.users.password.newLabel')"
+        :placeholder="t('settings.users.password.newLabel')"
         :error="errors.password"
         :hint="passwordHint"
         required
       >
-        <template #default="{ fieldId, describedBy, invalid }">
-          <Input
+        <template #default="{ fieldId, describedBy, invalid, placeholder }">
+          <PasswordInput
             :id="fieldId"
             v-model="values.password"
             :aria-describedby="describedBy"
             :aria-invalid="invalid"
-            type="password"
+            :placeholder="placeholder"
             name="new-password"
             autocomplete="new-password"
             :disabled="isSubmitting"
@@ -142,14 +154,19 @@ watch(open, (isOpen) => {
         </template>
       </FormField>
 
-      <FormField :label="t('settings.users.password.confirmLabel')" :error="confirmError" required>
-        <template #default="{ fieldId, describedBy, invalid }">
-          <Input
+      <FormField
+        :label="t('settings.users.password.confirmLabel')"
+        :placeholder="t('settings.users.password.confirmLabel')"
+        :error="confirmError"
+        required
+      >
+        <template #default="{ fieldId, describedBy, invalid, placeholder }">
+          <PasswordInput
             :id="fieldId"
             v-model="values.confirm"
             :aria-describedby="describedBy"
             :aria-invalid="invalid"
-            type="password"
+            :placeholder="placeholder"
             name="confirm-password"
             autocomplete="new-password"
             :disabled="isSubmitting"

@@ -5,6 +5,8 @@
   "username": "Kasutajanimi",
   "email": "E-post",
   "password": "Parool",
+  "confirmPassword": "Kinnita parool",
+  "passwordMismatch": "Paroolid ei kattu",
   "showPassword": "Näita parooli",
   "hidePassword": "Peida parool",
   "showOptionalFields": "Näita valikulisi välju",

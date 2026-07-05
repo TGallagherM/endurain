@@ -5,6 +5,8 @@
   "username": "Brugernavn",
   "email": "E-mail",
   "password": "Adgangskode",
+  "confirmPassword": "Bekræft adgangskode",
+  "passwordMismatch": "Adgangskoderne stemmer ikke overens",
   "showPassword": "Vis adgangskode",
   "hidePassword": "Skjul adgangskode",
   "showOptionalFields": "Vis valgfrie felter",

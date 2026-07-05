@@ -2,7 +2,7 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { ChevronDown, ChevronUp, Eye, EyeOff, LoaderCircle } from '@lucide/vue'
+import { ChevronDown, ChevronUp, LoaderCircle } from '@lucide/vue'
 
 import type { SignUpRequest } from '@/features/auth/types'
 
@@ -19,6 +19,7 @@ import { usePublicServerSettings } from '@/features/config/composables/usePublic
 import { useToasts } from '@/composables/useToasts'
 import { HttpError } from '@/services/http'
 import { requestSignUp } from '@/features/auth/services/signUp'
+import PasswordInput from '@/features/security/components/PasswordInput.vue'
 import {
   CURRENCY_OPTIONS,
   GENDER_OPTIONS,
@@ -36,6 +37,7 @@ interface SignUpFormValues {
   username: string
   email: string
   password: string
+  confirmPassword: string
   preferredLanguage: SignUpRequest['preferred_language']
   city: string
   birthdate: string
@@ -57,7 +59,6 @@ const languageCodes = computed(() =>
 const { serverSettings, loginImageUrl, load } = usePublicServerSettings()
 const toasts = useToasts()
 
-const showPassword = ref(false)
 const showOptionalFields = ref(false)
 
 const passwordRequirements = computed(() =>
@@ -152,6 +153,7 @@ const { values, errors, isValid, isSubmitting, submitError, handleSubmit, handle
       username: '',
       email: '',
       password: '',
+      confirmPassword: '',
       preferredLanguage: 'en',
       city: '',
       birthdate: '',
@@ -183,6 +185,19 @@ const { values, errors, isValid, isSubmitting, submitError, handleSubmit, handle
   })
 
 const isMetric = computed(() => values.units === 'metric')
+
+// A validator can't safely read the sibling `password` field (`values` is
+// destructured from this same `useForm(...)` call, so referencing it inside a
+// validator here would be a circular reference) — the mismatch is surfaced via
+// this computed + the `confirmPasswordError` below instead.
+const passwordsMatch = computed(
+  () => values.confirmPassword.length > 0 && values.confirmPassword === values.password,
+)
+const confirmPasswordError = computed(() =>
+  values.confirmPassword.length > 0 && values.confirmPassword !== values.password
+    ? t('signup.passwordMismatch')
+    : undefined,
+)
 
 // Keep `activeUnits` in step with the unit selector so the height validators
 // re-run against the correct system whenever the user toggles units.
@@ -276,33 +291,45 @@ onMounted(async () => {
           </template>
         </FormField>
 
-        <FormField :label="t('signup.password')" required :error="errors.password">
-          <template #default="{ fieldId, describedBy, invalid }">
-            <div class="relative">
-              <Input
-                :id="fieldId"
-                v-model="values.password"
-                class="w-full pe-10"
-                :aria-describedby="describedBy"
-                :aria-invalid="invalid"
-                name="password"
-                :type="showPassword ? 'text' : 'password'"
-                autocomplete="new-password"
-                required
-                :disabled="isSubmitting"
-                @blur="handleBlur('password')"
-              />
-              <button
-                type="button"
-                class="absolute end-2 top-1/2 inline-flex size-7 -translate-y-1/2 items-center justify-center rounded-input text-muted-foreground hover:bg-accent hover:text-accent-foreground focus:outline-none focus-visible:ring-3 focus-visible:ring-ring/30"
-                :aria-label="showPassword ? t('signup.hidePassword') : t('signup.showPassword')"
-                @click="showPassword = !showPassword"
-              >
-                <EyeOff v-if="showPassword" class="size-4" />
-                <Eye v-else class="size-4" />
-              </button>
-            </div>
+        <FormField
+          :label="t('signup.password')"
+          :placeholder="t('signup.password')"
+          required
+          :error="errors.password"
+        >
+          <template #default="{ fieldId, describedBy, invalid, placeholder }">
+            <PasswordInput
+              :id="fieldId"
+              v-model="values.password"
+              :aria-describedby="describedBy"
+              :aria-invalid="invalid"
+              :placeholder="placeholder"
+              name="new-password"
+              autocomplete="new-password"
+              :disabled="isSubmitting"
+              @blur="handleBlur('password')"
+            />
             <p class="text-hint">{{ passwordHint }}</p>
+          </template>
+        </FormField>
+
+        <FormField
+          :label="t('signup.confirmPassword')"
+          :placeholder="t('signup.confirmPassword')"
+          required
+          :error="confirmPasswordError"
+        >
+          <template #default="{ fieldId, describedBy, invalid, placeholder }">
+            <PasswordInput
+              :id="fieldId"
+              v-model="values.confirmPassword"
+              :aria-describedby="describedBy"
+              :aria-invalid="invalid"
+              :placeholder="placeholder"
+              name="confirm-password"
+              autocomplete="new-password"
+              :disabled="isSubmitting"
+            />
           </template>
         </FormField>
 
@@ -476,7 +503,11 @@ onMounted(async () => {
 
         <p class="text-hint">* {{ t('signup.requiredField') }}</p>
 
-        <Button class="w-full" type="submit" :disabled="!isValid || isSubmitting">
+        <Button
+          class="w-full"
+          type="submit"
+          :disabled="!isValid || !passwordsMatch || isSubmitting"
+        >
           <LoaderCircle v-if="isSubmitting" class="size-4 animate-spin" aria-hidden="true" />
           <span>{{ isSubmitting ? t('signup.signingUp') : t('signup.signUpButton') }}</span>
         </Button>

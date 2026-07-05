@@ -5,6 +5,8 @@
   "username": "Όνομα χρήστη",
   "email": "Email",
   "password": "Κωδικός πρόσβασης",
+  "confirmPassword": "Επιβεβαίωση κωδικού πρόσβασης",
+  "passwordMismatch": "Οι κωδικοί δεν ταιριάζουν",
   "showPassword": "Εμφάνιση κωδικού",
   "hidePassword": "Απόκρυψη κωδικού",
   "showOptionalFields": "Εμφάνιση προαιρετικών πεδίων",

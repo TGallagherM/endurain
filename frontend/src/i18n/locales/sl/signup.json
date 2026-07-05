@@ -5,6 +5,8 @@
   "username": "Uporabniško ime",
   "email": "E-pošta",
   "password": "Geslo",
+  "confirmPassword": "Potrdi geslo",
+  "passwordMismatch": "Gesli se ne ujemata",
   "showPassword": "Pokaži geslo",
   "hidePassword": "Skrij geslo",
   "showOptionalFields": "Pokaži neobvezna polja",

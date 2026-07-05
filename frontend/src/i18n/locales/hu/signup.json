@@ -5,6 +5,8 @@
   "username": "Felhasználónév",
   "email": "E-mail",
   "password": "Jelszó",
+  "confirmPassword": "Jelszó megerősítése",
+  "passwordMismatch": "A jelszavak nem egyeznek",
   "showPassword": "Jelszó megjelenítése",
   "hidePassword": "Jelszó elrejtése",
   "showOptionalFields": "Választható mezők megjelenítése",

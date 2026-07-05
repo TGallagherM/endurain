@@ -5,9 +5,9 @@ import { useI18n } from 'vue-i18n'
 import type { StravaClientInput } from '@/features/integrations/types'
 
 import { FormDialog } from '@/components/ui/form-dialog'
-import { Input } from '@/components/ui/input'
 import { inputFieldClass } from '@/components/ui/input/fieldClasses'
 import { Label } from '@/components/ui/label'
+import PasswordInput from '@/features/security/components/PasswordInput.vue'
 
 const open = defineModel<boolean>('open', { required: true })
 
@@ -74,13 +74,12 @@ function onSubmit(): void {
         <Label for="strava-client-secret">
           {{ t('settings.integrations.strava.clientSecret') }}
         </Label>
-        <Input
+        <PasswordInput
           id="strava-client-secret"
           v-model="clientSecret"
-          type="password"
+          name="strava-client-secret"
           autocomplete="off"
           :disabled="pending"
-          class="w-full"
           :placeholder="t('settings.integrations.strava.clientSecret')"
         />
       </div>

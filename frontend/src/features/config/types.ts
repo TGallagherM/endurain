@@ -57,6 +57,7 @@ export interface AppConfig {
  * @property currency - Default currency used to seed the sign-up form.
  * @property password_type - Password policy enforcement level for client-side hints.
  * @property password_length_regular_users - Minimum password length for regular users.
+ * @property password_length_admin_users - Minimum password length for admin users.
  * @property num_records_per_page - Page size the server enforces for paginated lists.
  */
 export type PublicServerSettings = Pick<
@@ -70,5 +71,6 @@ export type PublicServerSettings = Pick<
   | 'currency'
   | 'password_type'
   | 'password_length_regular_users'
+  | 'password_length_admin_users'
   | 'num_records_per_page'
 >

@@ -11,10 +11,14 @@ withDefaults(
   defineProps<{
     /** Field id, associated with an external `<Label>`. */
     id?: string
+    /** Form field name, used by password managers/autofill. */
+    name?: string
     /** Autocomplete hint (e.g. `current-password`, `new-password`). */
     autocomplete?: string
     /** Placeholder text. */
     placeholder?: string
+    /** Maximum allowed character length. */
+    maxlength?: number
     /** Whether the field is disabled. */
     disabled?: boolean
     /** Marks the field invalid for assistive tech. */
@@ -24,8 +28,10 @@ withDefaults(
   }>(),
   {
     id: undefined,
+    name: undefined,
     autocomplete: 'off',
     placeholder: undefined,
+    maxlength: undefined,
     disabled: false,
     ariaInvalid: false,
     ariaDescribedby: undefined,
@@ -43,9 +49,11 @@ const show = ref(false)
     <Input
       :id="id"
       v-model="model"
+      :name="name"
       :type="show ? 'text' : 'password'"
       :autocomplete="autocomplete"
       :placeholder="placeholder"
+      :maxlength="maxlength"
       :disabled="disabled"
       :aria-invalid="ariaInvalid"
       :aria-describedby="ariaDescribedby"

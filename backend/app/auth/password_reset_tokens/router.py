@@ -103,6 +103,7 @@ async def confirm_password_reset(
 
     Raises:
         HTTPException: 400 if token is invalid or expired.
+        HTTPException: 422 if the new password fails the account's password policy.
         HTTPException: 500 if password reset fails.
     """
     # Use the token to reset password

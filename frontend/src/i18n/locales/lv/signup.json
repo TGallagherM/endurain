@@ -5,6 +5,8 @@
   "username": "Lietotājvārds",
   "email": "E-pasts",
   "password": "Parole",
+  "confirmPassword": "Apstiprināt paroli",
+  "passwordMismatch": "Paroles nesakrīt",
   "showPassword": "Rādīt paroli",
   "hidePassword": "Slēpt paroli",
   "showOptionalFields": "Rādīt neobligātos laukus",

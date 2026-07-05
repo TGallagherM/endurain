@@ -5,6 +5,8 @@
   "username": "Naudotojo vardas",
   "email": "El. paštas",
   "password": "Slaptažodis",
+  "confirmPassword": "Patvirtinti slaptažodį",
+  "passwordMismatch": "Slaptažodžiai nesutampa",
   "showPassword": "Rodyti slaptažodį",
   "hidePassword": "Slėpti slaptažodį",
   "showOptionalFields": "Rodyti pasirenkamus laukus",

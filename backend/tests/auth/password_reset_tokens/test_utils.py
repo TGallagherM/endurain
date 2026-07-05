@@ -111,6 +111,58 @@ class TestUsePasswordResetToken:
         mock_edit_password.assert_not_called()
         mock_db.commit.assert_not_called()
 
+    @patch("auth.password_reset_tokens.utils.auth_credentials_crud.upsert_password_hash")
+    @patch("auth.password_reset_tokens.utils.password_reset_tokens_crud.claim_password_reset_token")
+    def test_weak_password_raises_422_distinct_from_invalid_token(
+        self,
+        mock_claim_token,
+        mock_edit_password,
+        mock_db,
+    ):
+        """
+        A password-policy failure is surfaced as 422 (not 400), so callers can
+        tell it apart from an invalid/expired token.
+        """
+        # Arrange
+        mock_claim_token.return_value = 42
+
+        identity_service = MagicMock()
+        identity_service.validate_and_hash_password.side_effect = HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Password is too short (got 4, need \u2265 8).",
+        )
+
+        mock_user = MagicMock()
+        mock_user.access_type = "regular"
+        mock_settings = MagicMock()
+        mock_settings.password_length_regular_users = 8
+        mock_settings.password_length_admin_users = 12
+        mock_settings.password_type = "strict"
+
+        # Act & Assert
+        with (
+            patch(
+                "auth.password_reset_tokens.utils.server_settings_utils.get_server_settings_or_404",
+                return_value=mock_settings,
+            ),
+            patch(
+                "auth.password_reset_tokens.utils.users_utils.get_user_by_id_or_404",
+                return_value=mock_user,
+            ),
+            pytest.raises(HTTPException) as exc_info,
+        ):
+            password_reset_tokens_utils.use_password_reset_token(
+                "plain-reset-token",
+                "weak",
+                identity_service,
+                mock_db,
+            )
+
+        assert exc_info.value.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
+        assert exc_info.value.detail == "Password is too short (got 4, need \u2265 8)."
+        mock_edit_password.assert_not_called()
+        mock_db.commit.assert_not_called()
+
     @patch("auth.password_reset_tokens.utils.auth_security_stores.clear_pending_mfa_for_user")
     @patch("auth.password_reset_tokens.utils.auth_sessions_crud.delete_sessions_by_user")
     @patch("auth.password_reset_tokens.utils.password_reset_tokens_crud.mark_user_password_reset_tokens_used")

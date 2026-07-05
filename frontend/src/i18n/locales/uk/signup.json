@@ -5,6 +5,8 @@
   "username": "Ім'я користувача",
   "email": "Електронна пошта",
   "password": "Пароль",
+  "confirmPassword": "Підтвердьте пароль",
+  "passwordMismatch": "Паролі не збігаються",
   "showPassword": "Показати пароль",
   "hidePassword": "Сховати пароль",
   "showOptionalFields": "Показати необов'язкові поля",

@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { useToasts } from '@/composables/useToasts'
 import { useRealtime } from '@/composables/useRealtime'
+import PasswordInput from '@/features/security/components/PasswordInput.vue'
 import { HttpError } from '@/services/http'
 import {
   useLinkGarminMutation,
@@ -135,14 +136,13 @@ function onSubmitMfa(): void {
 
       <div class="flex flex-col gap-1.5">
         <Label for="garmin-password">{{ t('settings.integrations.garmin.password') }}</Label>
-        <Input
+        <PasswordInput
           id="garmin-password"
           v-model="password"
-          type="password"
+          name="current-password"
           autocomplete="current-password"
           :disabled="linkMutation.isPending.value"
           :placeholder="t('settings.integrations.garmin.password')"
-          class="w-full"
         />
       </div>
 

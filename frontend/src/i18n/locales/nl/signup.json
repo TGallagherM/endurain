@@ -5,6 +5,8 @@
   "username": "Gebruikersnaam",
   "email": "E-mail",
   "password": "Wachtwoord",
+  "confirmPassword": "Wachtwoord bevestigen",
+  "passwordMismatch": "Wachtwoorden komen niet overeen",
   "showPassword": "Wachtwoord tonen",
   "hidePassword": "Wachtwoord verbergen",
   "showOptionalFields": "Optionele velden tonen",

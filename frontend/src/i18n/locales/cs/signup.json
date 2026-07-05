@@ -5,6 +5,8 @@
   "username": "Uživatelské jméno",
   "email": "E-mail",
   "password": "Heslo",
+  "confirmPassword": "Potvrďte heslo",
+  "passwordMismatch": "Hesla se neshodují",
   "showPassword": "Zobrazit heslo",
   "hidePassword": "Skrýt heslo",
   "showOptionalFields": "Zobrazit volitelná pole",

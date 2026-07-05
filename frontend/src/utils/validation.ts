@@ -84,3 +84,21 @@ export function isValidPassword(password: string, requirements: PasswordRequirem
   }
   return !(requirements.requireSpecialChar && !SPECIAL_CHAR_PATTERN.test(password))
 }
+
+/**
+ * Picks the minimum password length for an account's access tier, mirroring
+ * the backend's `resolve_password_min_length` (`auth/password_policy.py`) so
+ * client-side hints/validation match what the server will actually enforce.
+ *
+ * @param regularLength - Minimum length configured for regular users.
+ * @param adminLength - Minimum length configured for admin users.
+ * @param accessType - The account's access type (`'admin'` or anything else).
+ * @returns The minimum length that applies to `accessType`.
+ */
+export function resolvePasswordMinLength(
+  regularLength: number,
+  adminLength: number,
+  accessType: string,
+): number {
+  return accessType === 'admin' ? adminLength : regularLength
+}

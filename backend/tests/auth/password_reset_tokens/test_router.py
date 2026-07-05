@@ -192,6 +192,32 @@ class TestConfirmPasswordReset:
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 
+    @patch(
+        "auth.password_reset_tokens.router.password_reset_tokens_utils.use_password_reset_token",
+    )
+    def test_confirm_password_reset_policy_violation(
+        self,
+        mock_use,
+        fast_api_client,
+    ) -> None:
+        """Returns 422 (distinct from the 400 invalid-token case) when the new
+        password fails the account's configured password policy (e.g. a
+        length/complexity requirement above the schema's own 8-char floor)."""
+        mock_use.side_effect = HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="Password is too short (got 8, need \u2265 12).",
+        )
+
+        response = fast_api_client.post(
+            "/password-reset/confirm",
+            json={
+                "token": "valid-reset-token-value",
+                "new_password": "8-chars!",
+            },
+        )
+
+        assert response.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
+
     def test_confirm_password_reset_password_too_short(
         self,
         fast_api_client,

@@ -5,6 +5,8 @@
   "username": "Användarnamn",
   "email": "E-post",
   "password": "Lösenord",
+  "confirmPassword": "Bekräfta lösenord",
+  "passwordMismatch": "Lösenorden matchar inte",
   "showPassword": "Visa lösenord",
   "hidePassword": "Dölj lösenord",
   "showOptionalFields": "Visa valfria fält",

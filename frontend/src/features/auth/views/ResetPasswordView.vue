@@ -2,15 +2,15 @@
 import { computed, onMounted, ref } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Eye, EyeOff, LoaderCircle } from '@lucide/vue'
+import { LoaderCircle } from '@lucide/vue'
 
 import AppLogo from '@/components/AppLogo.vue'
 import { Alert } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { ErrorState } from '@/components/ui/error-state'
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { usePublicServerSettings } from '@/features/config/composables/usePublicServerSettings'
+import PasswordInput from '@/features/security/components/PasswordInput.vue'
 import { HttpError } from '@/services/http'
 import { confirmPasswordReset } from '@/features/auth/services/passwordReset'
 import { buildPasswordRequirements, isValidPassword } from '@/utils/validation'
@@ -25,7 +25,6 @@ const token = computed(() => (typeof route.query.token === 'string' ? route.quer
 
 const password = ref('')
 const confirmPassword = ref('')
-const showPassword = ref(false)
 const isLoading = ref(false)
 const alert = ref<{ kind: 'error'; message: string } | null>(null)
 
@@ -66,10 +65,20 @@ async function submitForm(): Promise<void> {
     await confirmPasswordReset({ token: token.value, new_password: password.value })
     await router.replace({ name: 'login', query: { passwordResetSuccess: 'true' } })
   } catch (error) {
-    const message =
-      error instanceof HttpError && error.status === 400
-        ? t('resetPassword.errorInvalidToken')
-        : t('resetPassword.errorGeneral')
+    // The client only knows the regular-user length policy (the token's
+    // account tier isn't known before submitting), so an admin account
+    // requiring a longer/stricter password can still fail server-side even
+    // though `canSubmit` passed. The backend distinguishes that case (422)
+    // from an invalid/expired token (400) so this doesn't show as the wrong
+    // error.
+    let message = t('resetPassword.errorGeneral')
+    if (error instanceof HttpError) {
+      if (error.status === 400) {
+        message = t('resetPassword.errorInvalidToken')
+      } else if (error.status === 422) {
+        message = t('resetPassword.errorWeakPassword')
+      }
+    }
     alert.value = { kind: 'error', message }
   } finally {
     isLoading.value = false
@@ -111,27 +120,13 @@ onMounted(() => {
 
         <div class="mt-5 flex flex-col gap-1.5">
           <Label for="new-password">{{ t('resetPassword.newPassword') }}</Label>
-          <div class="relative">
-            <Input
-              id="new-password"
-              v-model="password"
-              :type="showPassword ? 'text' : 'password'"
-              autocomplete="new-password"
-              class="w-full pr-10"
-              :aria-invalid="!isPasswordValid"
-            />
-            <button
-              type="button"
-              class="absolute inset-y-0 right-0 flex items-center px-3 text-muted-foreground"
-              :aria-label="
-                showPassword ? t('resetPassword.hidePassword') : t('resetPassword.showPassword')
-              "
-              @click="showPassword = !showPassword"
-            >
-              <EyeOff v-if="showPassword" class="size-4" aria-hidden="true" />
-              <Eye v-else class="size-4" aria-hidden="true" />
-            </button>
-          </div>
+          <PasswordInput
+            id="new-password"
+            v-model="password"
+            name="new-password"
+            autocomplete="new-password"
+            :aria-invalid="!isPasswordValid"
+          />
           <p class="text-hint">
             {{ t('resetPassword.passwordHelp', { min: passwordRequirements.minLength }) }}
           </p>
@@ -142,12 +137,11 @@ onMounted(() => {
 
         <div class="mt-4 flex flex-col gap-1.5">
           <Label for="confirm-password">{{ t('resetPassword.confirmPassword') }}</Label>
-          <Input
+          <PasswordInput
             id="confirm-password"
             v-model="confirmPassword"
-            :type="showPassword ? 'text' : 'password'"
+            name="confirm-password"
             autocomplete="new-password"
-            class="w-full"
             :aria-invalid="!passwordsMatch"
           />
           <p v-if="!passwordsMatch" class="text-field-error">
