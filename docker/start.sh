@@ -10,9 +10,10 @@ echo_error_log() {
     echo "ERROR:     $1" >&2
 }
 
-# Log the container's UID for troubleshooting
+# Log the container's UID and GID for troubleshooting
 current_uid=$(id -u)
-echo_info_log "Container running as UID $current_uid"
+current_gid=$(id -g)
+echo_info_log "Container running as UID $current_uid, GID $current_gid"
 
 # Create required directories
 BACKEND_FOLDER="${BACKEND_DIR:-/app/backend}"
@@ -42,7 +43,7 @@ for dir in $REQUIRED_DIRS; do
         echo_info_log "Creating directory: $dir"
         if ! mkdir -p "$dir" 2>/dev/null; then
             echo_error_log "Cannot create $dir - permission denied."
-            echo_error_log "Container UID: $current_uid"
+            echo_error_log "Container UID: $current_uid, GID: $current_gid"
             if echo "$dir" | grep -q "^$LOGS_FOLDER"; then
                 mount_root="$LOGS_FOLDER"
             else
@@ -51,9 +52,9 @@ for dir in $REQUIRED_DIRS; do
             if [ -d "$mount_root" ]; then
                 echo_error_log "Mount point: $(stat -c '%A  owner=%u  group=%g  path=%n' "$mount_root" 2>/dev/null || true)"
             fi
-            echo_error_log "The bind mount on the host is not writable by container UID $current_uid."
+            echo_error_log "The bind mount on the host is not writable by container UID $current_uid, GID $current_gid."
             echo_error_log "Fix on the host - run once:"
-            echo_error_log "  sudo chown -R $current_uid:$current_uid /var/opt/endurain/backend"
+            echo_error_log "  sudo chown -R $current_uid:$current_gid /var/opt/endurain/backend"
             echo_error_log "(Replace /var/opt/endurain with your LOCAL_PATH if set.)"
             echo_error_log "See docs.endurain.com/getting-started#create-directory-structure"
             exit 1
