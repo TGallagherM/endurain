@@ -99,7 +99,14 @@ if [ -n "$ENDURAIN_HOST" ]; then
             # through to the closing '"' of the meta content attribute. Matching to
             # the next ';' would corrupt the policy: the built HTML encodes quotes
             # as &#39; whose trailing ';' terminates the match early.
-            sed -i "s#connect-src [^\"]*#connect-src 'self' $API_ORIGIN $WS_ORIGIN $EXTERNAL_CONNECT#g" "$INDEX_HTML"
+            tmp_file=$(mktemp) || exit 1
+            if ! sed "s#connect-src [^\"]*#connect-src 'self' $API_ORIGIN $WS_ORIGIN $EXTERNAL_CONNECT#g" "$INDEX_HTML" > "$tmp_file"; then
+                echo_error_log "Failed to update CSP connect-src in index.html"
+                rm -f "$tmp_file"
+                exit 1
+            fi
+            cat "$tmp_file" > "$INDEX_HTML" || { echo_error_log "Failed to write updated index.html"; rm -f "$tmp_file"; exit 1; }
+            rm -f "$tmp_file"
             echo_info_log "Hardened CSP connect-src to 'self' $API_ORIGIN $WS_ORIGIN $EXTERNAL_CONNECT"
         else
             echo_error_log "ENDURAIN_HOST is not a clean http(s) origin; left CSP connect-src as 'self'."
