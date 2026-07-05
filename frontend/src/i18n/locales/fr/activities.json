@@ -81,7 +81,8 @@
     "normalizedPower": "Puissance normalisée",
     "avgCadence": "Cadence moy.",
     "maxCadence": "Cadence max.",
-    "calories": "Calories"
+    "calories": "Calories",
+    "jumps": "Sauts"
   },
   "streams": {
     "heartRate": "Fréquence cardiaque",
@@ -105,6 +106,7 @@
     "tempo": "Allure / Vitesse",
     "elevation": "Dénivelé",
     "strokeRate": "Cadence de nage",
+    "cycles": "Cycles",
     "hr": "Fréquence cardiaque"
   },
   "workout": {

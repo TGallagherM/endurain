@@ -116,6 +116,8 @@ export interface ActivityLap {
   avgHeartRate: number | null
   /** Average cadence (raw). */
   avgCadence: number | null
+  /** Total cycles (e.g. strides, pedal revolutions, or swim strokes). */
+  totalCycles: number | null
   /** Lap intensity label (e.g. `active`, `rest`). */
   intensity: string | null
 }
@@ -240,6 +242,8 @@ export interface Activity {
   /** Moving time in seconds. */
   totalTimerTime: number | null
   calories: number | null
+  /** Total cycles (e.g. jump-rope jumps, strides, pedal revolutions, or strokes). */
+  totalCycles: number | null
 
   stravaActivityId: number | null
   garminActivityId: number | null

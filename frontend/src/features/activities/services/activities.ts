@@ -76,6 +76,7 @@ export function mapActivity(dto: ActivityDto): Activity {
     totalElapsedTime: dto.total_elapsed_time ?? null,
     totalTimerTime: dto.total_timer_time ?? null,
     calories: dto.calories ?? null,
+    totalCycles: dto.total_cycles ?? null,
 
     stravaActivityId: dto.strava_activity_id ?? null,
     garminActivityId: dto.garminconnect_activity_id ?? null,
@@ -168,6 +169,7 @@ export function mapActivityLap(dto: ActivityLapDto): ActivityLap {
     totalAscent: dto.total_ascent ?? null,
     avgHeartRate: dto.avg_heart_rate ?? null,
     avgCadence: dto.avg_cadence ?? null,
+    totalCycles: dto.total_cycles ?? null,
     intensity: dto.intensity ?? null,
   }
 }

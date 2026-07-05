@@ -1,3 +1,5 @@
+import pathlib
+from importlib import import_module
 from logging.config import fileConfig
 
 from alembic import context
@@ -15,10 +17,33 @@ config = context.config
 if config.attributes.get("configure_logger", True):
     fileConfig(config.config_file_name)
 
+
+def _import_all_models() -> None:
+    """
+    Import every models.py so Base.metadata is complete.
+
+    Autogenerate diffs Base.metadata against the live
+    database. A model's table only registers on the
+    metadata when its module is imported. The Alembic CLI
+    runs only this env.py, which would otherwise leave the
+    metadata empty and make autogenerate emit drop_table
+    for the entire schema.
+
+    Returns:
+        None.
+    """
+    app_dir = pathlib.Path(__file__).resolve().parents[1]
+    for path in sorted(app_dir.glob("**/models.py")):
+        module = ".".join(path.relative_to(app_dir).with_suffix("").parts)
+        import_module(module)
+
+
+# Populate Base.metadata with every ORM model before
+# autogenerate compares it against the database.
+_import_all_models()
+
 # add your model's MetaData object here
 # for 'autogenerate' support
-# from myapp import mymodel
-# target_metadata = mymodel.Base.metadata
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,

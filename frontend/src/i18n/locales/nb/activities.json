@@ -81,7 +81,8 @@
     "normalizedPower": "Normalisert effekt",
     "avgCadence": "Gj.snittlig kadens",
     "maxCadence": "Maks kadens",
-    "calories": "Kalorier"
+    "calories": "Kalorier",
+    "jumps": "Hopp"
   },
   "streams": {
     "heartRate": "Puls",
@@ -105,6 +106,7 @@
     "tempo": "Tempo / Fart",
     "elevation": "Stigning",
     "strokeRate": "Taktfrekvens",
+    "cycles": "Sykluser",
     "hr": "Puls"
   },
   "workout": {

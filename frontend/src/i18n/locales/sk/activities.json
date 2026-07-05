@@ -81,7 +81,8 @@
     "normalizedPower": "Normalizovaný výkon",
     "avgCadence": "Priem. kadencia",
     "maxCadence": "Max. kadencia",
-    "calories": "Kalórie"
+    "calories": "Kalórie",
+    "jumps": "Skoky"
   },
   "streams": {
     "heartRate": "Tepová frekvencia",
@@ -105,6 +106,7 @@
     "tempo": "Tempo / Rýchlosť",
     "elevation": "Prevýšenie",
     "strokeRate": "Frekvencia záberov",
+    "cycles": "Cykly",
     "hr": "Tepová frekvencia"
   },
   "workout": {
@@ -262,6 +264,7 @@
     "sailing": "Plachtenie",
     "snowShoeing": "Chôdza na snežniciach",
     "inlineSkating": "Inline korčuľovanie",
-    "hiit": "HIIT"
+    "hiit": "HIIT",
+    "jumpRope": "Skakanie cez lanom"
   }
 }

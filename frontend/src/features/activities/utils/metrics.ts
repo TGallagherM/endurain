@@ -4,6 +4,7 @@ import type { Activity } from '../types'
 import {
   activityTypeIsCycling,
   activityTypeIsDistanceBased,
+  activityTypeIsJumpRope,
   activityTypeIsRunning,
   activityTypeIsSailing,
   activityTypeIsWindsurf,
@@ -160,9 +161,24 @@ export function buildActivityMetrics(
       })
     }
   }
+  // Jump rope: total_cycles is the total jump count and the headline metric
+  // (jump rope has no distance). Other sports interpret cycles differently
+  // (strides/pedal revolutions/strokes) where cadence already covers it.
+  const pushJumps = (): void => {
+    if (activityTypeIsJumpRope(type) && has(activity.totalCycles)) {
+      tiles.push({
+        key: 'jumps',
+        labelKey: 'activities.metrics.jumps',
+        value: String(Math.round(activity.totalCycles)),
+        unit: '',
+        accent: 'brand',
+      })
+    }
+  }
 
   // Non-distance sessions (gym/strength/yoga/racquet/…): calories, time, avg HR.
   if (!activityTypeIsDistanceBased(type)) {
+    pushJumps()
     pushCalories()
     pushTime()
     pushAvgHr()

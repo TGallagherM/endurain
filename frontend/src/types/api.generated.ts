@@ -5406,6 +5406,7 @@ export interface components {
          *         tracker_manufacturer: Device manufacturer name.
          *         tracker_model: Device model name.
          *         map_thumbnail_path: Path to the map thumbnail image.
+         *         total_cycles: Total number of cycles (e.g., pedal strokes) recorded.
          */
         Activity: {
             /** Activity Type */
@@ -5509,6 +5510,8 @@ export interface components {
             strava_gear_id?: string | null;
             /** Timezone */
             timezone?: string | null;
+            /** Total Cycles */
+            total_cycles?: number | null;
             /** Total Elapsed Time */
             total_elapsed_time?: number | null;
             /** Total Timer Time */

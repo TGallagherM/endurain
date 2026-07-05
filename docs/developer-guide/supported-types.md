@@ -51,6 +51,7 @@ The table bellow details the activity types supported by Endurain.
 | Snow shoeing | 44 |
 | Inline skating | 45 |
 | HIIT | 46 |
+| Jump rope | 47 |
 
 
 ## Supported gear types

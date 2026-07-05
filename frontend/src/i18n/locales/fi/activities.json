@@ -81,7 +81,8 @@
     "normalizedPower": "Normalisoitu teho",
     "avgCadence": "Keskikadenssi",
     "maxCadence": "Maksimikadenssi",
-    "calories": "Kalorit"
+    "calories": "Kalorit",
+    "jumps": "Hypyt"
   },
   "streams": {
     "heartRate": "Syke",
@@ -105,6 +106,7 @@
     "tempo": "Tahti / Nopeus",
     "elevation": "Nousu",
     "strokeRate": "Vetotiheys",
+    "cycles": "Syklit",
     "hr": "Syke"
   },
   "workout": {
@@ -262,6 +264,7 @@
     "sailing": "Purjehdus",
     "snowShoeing": "Lumikenkäily",
     "inlineSkating": "Rullaluistelu",
-    "hiit": "HIIT"
+    "hiit": "HIIT",
+    "jumpRope": "Hyppynaru"
   }
 }

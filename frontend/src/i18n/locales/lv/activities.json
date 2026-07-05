@@ -81,7 +81,8 @@
     "normalizedPower": "Normalizētā jauda",
     "avgCadence": "Vid. kadence",
     "maxCadence": "Maks. kadence",
-    "calories": "Kalorijas"
+    "calories": "Kalorijas",
+    "jumps": "Lēcieni"
   },
   "streams": {
     "heartRate": "Sirdsdarbība",
@@ -105,6 +106,7 @@
     "tempo": "Temps / Ātrums",
     "elevation": "Augstuma ieguvums",
     "strokeRate": "Vēzienu biežums",
+    "cycles": "Cikli",
     "hr": "Sirdsdarbība"
   },
   "workout": {
@@ -262,6 +264,7 @@
     "sailing": "Burāšana",
     "snowShoeing": "Pastaiga ar sniega kurpēm",
     "inlineSkating": "Skrituļslidošana",
-    "hiit": "HIIT"
+    "hiit": "HIIT",
+    "jumpRope": "Ložu trauciens"
   }
 }

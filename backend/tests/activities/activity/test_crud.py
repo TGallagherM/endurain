@@ -905,6 +905,12 @@ def sqlite_session():
         yield session
     finally:
         session.close()
+        # StaticPool keeps the single sqlite3 connection open for the life of
+        # the engine; session.close() alone doesn't release it, which leaks an
+        # unclosed sqlite3.Connection until GC eventually collects it (showing
+        # up as a ResourceWarning on an unrelated, later test). Dispose the
+        # engine explicitly to close the connection deterministically.
+        session.bind.dispose()
 
 
 def _public_activity(**overrides):

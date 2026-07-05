@@ -81,7 +81,8 @@
     "normalizedPower": "Normaliseeritud võimsus",
     "avgCadence": "Keskmine kadents",
     "maxCadence": "Maksimaalne kadents",
-    "calories": "Kalorid"
+    "calories": "Kalorid",
+    "jumps": "Hüpped"
   },
   "streams": {
     "heartRate": "Pulss",
@@ -105,6 +106,7 @@
     "tempo": "Tempo / kiirus",
     "elevation": "Tõus",
     "strokeRate": "Tõmbesagedus",
+    "cycles": "Tsüklid",
     "hr": "Pulss"
   },
   "workout": {
@@ -262,6 +264,7 @@
     "sailing": "Purjetamine",
     "snowShoeing": "Lumeräätsadega kõndimine",
     "inlineSkating": "Rulluisutamine",
-    "hiit": "HIIT"
+    "hiit": "HIIT",
+    "jumpRope": "Nööri hüpamine"
   }
 }

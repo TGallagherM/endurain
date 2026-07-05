@@ -81,7 +81,8 @@
     "normalizedPower": "Normalleştirilmiş güç",
     "avgCadence": "Ort. kadans",
     "maxCadence": "Maks. kadans",
-    "calories": "Kalori"
+    "calories": "Kalori",
+    "jumps": "Atlamalar"
   },
   "streams": {
     "heartRate": "Kalp atış hızı",
@@ -105,6 +106,7 @@
     "tempo": "Tempo / Hız",
     "elevation": "Yükseklik",
     "strokeRate": "Kulaç oranı",
+    "cycles": "Döngüler",
     "hr": "Kalp atış hızı"
   },
   "workout": {
@@ -262,6 +264,7 @@
     "sailing": "Yelken",
     "snowShoeing": "Kar ayakkabısı yürüyüşü",
     "inlineSkating": "Tekerlekli paten",
-    "hiit": "HIIT"
+    "hiit": "HIIT",
+    "jumpRope": "Atlama ipi"
   }
 }

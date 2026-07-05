@@ -338,6 +338,12 @@ class TestActivityTypeMap:
         assert user_goals_schema.ActivityType.WALK in type_map
         assert user_goals_schema.ActivityType.CARDIO in type_map
 
+    def test_cardio_includes_jump_rope_id(self):
+        """Test CARDIO mapping includes the jump rope activity ID (47)."""
+        type_map = user_goals_utils._ACTIVITY_TYPE_MAP
+
+        assert 47 in type_map[user_goals_schema.ActivityType.CARDIO]
+
     def test_strength_uses_default_types(self):
         """Test STRENGTH not in map, uses default."""
         type_map = user_goals_utils._ACTIVITY_TYPE_MAP

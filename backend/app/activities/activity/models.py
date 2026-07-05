@@ -347,6 +347,10 @@ class Activity(Base):
         nullable=True,
         comment=("Relative path to the pre-generated static map thumbnail image"),
     )
+    total_cycles: Mapped[int | None] = mapped_column(
+        nullable=True,
+        comment=("Total number of cycles (e.g., pedal strokes) recorded"),
+    )
 
     # Define a relationship to the Users model
     users: Mapped["Users"] = relationship(

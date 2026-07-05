@@ -81,7 +81,8 @@
     "normalizedPower": "標準化功率",
     "avgCadence": "平均踏頻",
     "maxCadence": "最高踏頻",
-    "calories": "卡路里"
+    "calories": "卡路里",
+    "jumps": "跳數"
   },
   "streams": {
     "heartRate": "心率",
@@ -105,6 +106,7 @@
     "tempo": "配速 / 速度",
     "elevation": "海拔",
     "strokeRate": "划頻",
+    "cycles": "循環數",
     "hr": "心率"
   },
   "workout": {
@@ -262,6 +264,7 @@
     "sailing": "帆船",
     "snowShoeing": "雪地健行",
     "inlineSkating": "直排輪",
-    "hiit": "HIIT"
+    "hiit": "HIIT",
+    "jumpRope": "跳繩"
   }
 }

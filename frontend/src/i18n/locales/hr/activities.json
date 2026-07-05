@@ -81,7 +81,8 @@
     "normalizedPower": "Normalizirana snaga",
     "avgCadence": "Prosj. kadenca",
     "maxCadence": "Maks. kadenca",
-    "calories": "Kalorije"
+    "calories": "Kalorije",
+    "jumps": "Skokovi"
   },
   "streams": {
     "heartRate": "Broj otkucaja srca",
@@ -105,6 +106,7 @@
     "tempo": "Tempo / Brzina",
     "elevation": "Visinska razlika",
     "strokeRate": "Frekvencija zaveslaja",
+    "cycles": "Ciklusi",
     "hr": "Broj otkucaja srca"
   },
   "workout": {
@@ -262,6 +264,7 @@
     "sailing": "Jedrenje",
     "snowShoeing": "Hodanje s krpljama",
     "inlineSkating": "Rolanje",
-    "hiit": "HIIT"
+    "hiit": "HIIT",
+    "jumpRope": "Preskakanje užeta"
   }
 }

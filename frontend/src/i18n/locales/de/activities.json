@@ -81,7 +81,8 @@
     "normalizedPower": "Normalisierte Leistung",
     "avgCadence": "Ø Kadenz",
     "maxCadence": "Max. Kadenz",
-    "calories": "Kalorien"
+    "calories": "Kalorien",
+    "jumps": "Sprünge"
   },
   "streams": {
     "heartRate": "Herzfrequenz",
@@ -105,6 +106,7 @@
     "tempo": "Pace / Tempo",
     "elevation": "Höhe",
     "strokeRate": "Zugfrequenz",
+    "cycles": "Zyklen",
     "hr": "Herzfrequenz"
   },
   "workout": {
@@ -262,6 +264,7 @@
     "sailing": "Segeln",
     "snowShoeing": "Schneeschuhwandern",
     "inlineSkating": "Inlineskaten",
-    "hiit": "HIIT"
+    "hiit": "HIIT",
+    "jumpRope": "Springseil"
   }
 }

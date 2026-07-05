@@ -81,7 +81,8 @@
     "normalizedPower": "Normalizirana moč",
     "avgCadence": "Povp. kadenca",
     "maxCadence": "Maks. kadenca",
-    "calories": "Kalorije"
+    "calories": "Kalorije",
+    "jumps": "Skoki"
   },
   "streams": {
     "heartRate": "Srčni utrip",
@@ -105,6 +106,7 @@
     "tempo": "Tempo / Hitrost",
     "elevation": "Višinska razlika",
     "strokeRate": "Hitrost zamahov",
+    "cycles": "Cikli",
     "hr": "Srčni utrip"
   },
   "workout": {

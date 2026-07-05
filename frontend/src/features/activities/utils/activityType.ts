@@ -67,6 +67,7 @@ export const ACTIVITY_TYPE_LABEL_KEYS: Record<number, string> = {
   44: 'activities.types.snowShoeing',
   45: 'activities.types.inlineSkating',
   46: 'activities.types.hiit',
+  47: 'activities.types.jumpRope',
 }
 
 const RUNNING_TYPES = new Set([1, 2, 3, 34, 40])
@@ -87,6 +88,7 @@ const STAND_UP_PADDLING_TYPE = 32
 const SURF_TYPE = 33
 const SKATING_TYPE = 45
 const ICE_SKATING_TYPE = 37
+const JUMP_ROPE_TYPE = 47
 const VIRTUAL_TYPES = new Set([3, 7])
 
 /** @returns Whether the type is a running discipline. */
@@ -157,6 +159,11 @@ export function activityTypeIsSkating(type: number): boolean {
 /** @returns Whether the type is ice skating. */
 export function activityTypeIsIceSkating(type: number): boolean {
   return type === ICE_SKATING_TYPE
+}
+
+/** @returns Whether the type is jump rope (total cycles = total jumps). */
+export function activityTypeIsJumpRope(type: number): boolean {
+  return type === JUMP_ROPE_TYPE
 }
 
 /**
@@ -232,10 +239,10 @@ export function activityTypeUsesPace(type: number): boolean {
 
 /**
  * Activity types with no meaningful distance (gym/structured/indoor sessions):
- * workout, yoga, transition, strength, crossfit, cardio, HIIT. Racquet sports
- * are also non-distance (handled via {@link activityTypeIsRacquet}).
+ * workout, yoga, transition, strength, crossfit, cardio, HIIT, jump rope.
+ * Racquet sports are also non-distance (handled via {@link activityTypeIsRacquet}).
  */
-const NON_DISTANCE_TYPES = new Set([10, 14, 18, 19, 20, 41, 46])
+const NON_DISTANCE_TYPES = new Set([10, 14, 18, 19, 20, 41, 46, 47])
 
 /**
  * Whether an activity is distance-based (shows distance/pace/elevation) versus

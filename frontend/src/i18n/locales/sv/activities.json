@@ -81,7 +81,8 @@
     "normalizedPower": "Normaliserad effekt",
     "avgCadence": "Genomsnittlig kadens",
     "maxCadence": "Maximal kadens",
-    "calories": "Kalorier"
+    "calories": "Kalorier",
+    "jumps": "Hopp"
   },
   "streams": {
     "heartRate": "Hjärtfrekvens",
@@ -105,6 +106,7 @@
     "tempo": "Tempo / Hastighet",
     "elevation": "Höjdmeter",
     "strokeRate": "Tagtfrekvens",
+    "cycles": "Cykler",
     "hr": "Hjärtfrekvens"
   },
   "workout": {
@@ -262,6 +264,7 @@
     "sailing": "Segling",
     "snowShoeing": "Snöskovandring",
     "inlineSkating": "Rullskridskoåkning",
-    "hiit": "HIIT"
+    "hiit": "HIIT",
+    "jumpRope": "Hopprep"
   }
 }

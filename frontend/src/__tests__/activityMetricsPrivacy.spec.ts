@@ -105,6 +105,36 @@ describe('buildActivityMetrics', () => {
     expect(keys).not.toContain('distance')
   })
 
+  it('leads with a jumps tile for jump rope when total cycles are present', () => {
+    const tiles = buildActivityMetrics(
+      makeActivity({ activityType: 47, totalCycles: 1200 }),
+      'metric',
+      visible,
+    )
+    const jumps = tiles.find((tile) => tile.key === 'jumps')
+    expect(tiles[0]?.key).toBe('jumps')
+    expect(jumps?.value).toBe('1200')
+    expect(jumps?.labelKey).toBe('activities.metrics.jumps')
+  })
+
+  it('omits the jumps tile for jump rope without total cycles', () => {
+    const tiles = buildActivityMetrics(
+      makeActivity({ activityType: 47, totalCycles: null }),
+      'metric',
+      visible,
+    )
+    expect(tiles.map((tile) => tile.key)).not.toContain('jumps')
+  })
+
+  it('does not show a jumps tile for other non-distance activities', () => {
+    const tiles = buildActivityMetrics(
+      makeActivity({ activityType: 19, totalCycles: 500 }),
+      'metric',
+      visible,
+    )
+    expect(tiles.map((tile) => tile.key)).not.toContain('jumps')
+  })
+
   it('hides heart-rate tiles for a privacy-restricted swimmer but keeps pace', () => {
     const tiles = buildActivityMetrics(makeActivity({ activityType: 8 }), 'metric', {
       ...visible,

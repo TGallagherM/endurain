@@ -81,7 +81,8 @@
     "normalizedPower": "Genormaliseerd vermogen",
     "avgCadence": "Gem. cadans",
     "maxCadence": "Max. cadans",
-    "calories": "Calorieën"
+    "calories": "Calorieën",
+    "jumps": "Sprongen"
   },
   "streams": {
     "heartRate": "Hartslag",
@@ -105,6 +106,7 @@
     "tempo": "Tempo / Snelheid",
     "elevation": "Hoogte",
     "strokeRate": "Slagfrequentie",
+    "cycles": "Cycli",
     "hr": "Hartslag"
   },
   "workout": {
@@ -262,6 +264,7 @@
     "sailing": "Zeilen",
     "snowShoeing": "Sneeuwschoenwandelen",
     "inlineSkating": "Inline skaten",
-    "hiit": "HIIT"
+    "hiit": "HIIT",
+    "jumpRope": "Springtouw"
   }
 }

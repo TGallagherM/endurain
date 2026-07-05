@@ -81,7 +81,8 @@
     "normalizedPower": "Putere normalizată",
     "avgCadence": "Cadență medie",
     "maxCadence": "Cadență maximă",
-    "calories": "Calorii"
+    "calories": "Calorii",
+    "jumps": "Sărituri"
   },
   "streams": {
     "heartRate": "Puls",
@@ -105,6 +106,7 @@
     "tempo": "Ritm / Viteză",
     "elevation": "Diferență de nivel",
     "strokeRate": "Frecvența brațelor",
+    "cycles": "Cicluri",
     "hr": "Puls"
   },
   "workout": {
@@ -262,6 +264,7 @@
     "sailing": "Navigație cu vele",
     "snowShoeing": "Mers cu rachete de zăpadă",
     "inlineSkating": "Role",
-    "hiit": "HIIT"
+    "hiit": "HIIT",
+    "jumpRope": "Săritura cu frânghie"
   }
 }

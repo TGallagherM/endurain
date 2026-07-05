@@ -81,7 +81,8 @@
     "normalizedPower": "Нормалізована потужність",
     "avgCadence": "Сер. каденс",
     "maxCadence": "Макс. каденс",
-    "calories": "Калорії"
+    "calories": "Калорії",
+    "jumps": "Стрибки"
   },
   "streams": {
     "heartRate": "Пульс",
@@ -105,6 +106,7 @@
     "tempo": "Темп / Швидкість",
     "elevation": "Висота",
     "strokeRate": "Частота гребків",
+    "cycles": "Цикли",
     "hr": "Пульс"
   },
   "workout": {
@@ -262,6 +264,7 @@
     "sailing": "Вітрильний спорт",
     "snowShoeing": "Ходьба на снігоступах",
     "inlineSkating": "Катання на роликах",
-    "hiit": "HIIT"
+    "hiit": "HIIT",
+    "jumpRope": "Стрибки зі скакалкою"
   }
 }

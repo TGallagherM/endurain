@@ -53,6 +53,7 @@ export function makeActivity(overrides: Partial<Activity> = {}): Activity {
     totalElapsedTime: 3600,
     totalTimerTime: 3500,
     calories: 600,
+    totalCycles: null,
     stravaActivityId: null,
     garminActivityId: null,
     mapThumbnailPath: null,

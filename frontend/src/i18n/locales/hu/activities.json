@@ -81,7 +81,8 @@
     "normalizedPower": "Normalizált teljesítmény",
     "avgCadence": "Átl. kadencia",
     "maxCadence": "Max. kadencia",
-    "calories": "Kalória"
+    "calories": "Kalória",
+    "jumps": "Ugrások"
   },
   "streams": {
     "heartRate": "Pulzusszám",
@@ -105,6 +106,7 @@
     "tempo": "Tempó / Sebesség",
     "elevation": "Szintemelkedés",
     "strokeRate": "Tempószám",
+    "cycles": "Ciklusok",
     "hr": "Pulzusszám"
   },
   "workout": {
@@ -262,6 +264,7 @@
     "sailing": "Vitorlázás",
     "snowShoeing": "Hótalpazás",
     "inlineSkating": "Görkorcsolyázás",
-    "hiit": "HIIT"
+    "hiit": "HIIT",
+    "jumpRope": "Ugrókötél"
   }
 }

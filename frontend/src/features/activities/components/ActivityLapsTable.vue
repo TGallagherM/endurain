@@ -42,6 +42,7 @@ interface LapRow {
   tempoScore: number | null
   elevation: string
   strokeRate: string
+  cycles: string
   hr: string
   isRest: boolean
 }
@@ -69,6 +70,7 @@ const rows = computed<LapRow[]>(() =>
           ? '--'
           : combineMetric(formatElevation(lap.totalAscent, props.units)),
       strokeRate: lap.avgCadence === null ? '--' : `${Math.round(lap.avgCadence)}`,
+      cycles: lap.totalCycles === null ? '--' : `${lap.totalCycles}`,
       hr: lap.avgHeartRate === null ? '--' : `${Math.round(lap.avgHeartRate)} bpm`,
       isRest: entry.swimIsRest,
     }
@@ -94,6 +96,7 @@ const rows = computed<LapRow[]>(() =>
           <th v-if="showStrokeRate" class="py-2 pe-3 font-medium">
             {{ t('activities.laps.strokeRate') }}
           </th>
+          <th class="py-2 pe-3 font-medium">{{ t('activities.laps.cycles') }}</th>
           <th class="py-2 font-medium">{{ t('activities.laps.hr') }}</th>
         </tr>
       </thead>
@@ -130,6 +133,7 @@ const rows = computed<LapRow[]>(() =>
           <td v-if="showStrokeRate" class="py-2 pe-3 text-muted-foreground">
             {{ row.strokeRate }}
           </td>
+          <td class="py-2 pe-3 text-muted-foreground">{{ row.cycles }}</td>
           <td class="py-2 text-muted-foreground">{{ row.hr }}</td>
         </tr>
       </tbody>

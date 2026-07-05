@@ -81,7 +81,8 @@
     "normalizedPower": "Normalizuota galia",
     "avgCadence": "Vid. kadencija",
     "maxCadence": "Maks. kadencija",
-    "calories": "Kalorijos"
+    "calories": "Kalorijos",
+    "jumps": "Šuoliai"
   },
   "streams": {
     "heartRate": "Pulsas",
@@ -105,6 +106,7 @@
     "tempo": "Tempas / greitis",
     "elevation": "Aukščio pokytis",
     "strokeRate": "Mostų dažnis",
+    "cycles": "Ciklai",
     "hr": "Pulsas"
   },
   "workout": {
@@ -262,6 +264,7 @@
     "sailing": "Buriavimas",
     "snowShoeing": "Ėjimas su sniegbačiais",
     "inlineSkating": "Riedučių sportas",
-    "hiit": "HIIT"
+    "hiit": "HIIT",
+    "jumpRope": "Šokimas su virve"
   }
 }

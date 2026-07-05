@@ -86,6 +86,7 @@ def _session_record(manufacturer, product=None) -> dict:
             "workout_feeling": None,
             "workout_rpe": None,
             "calories": 934,
+            "total_cycles": None,
         },
     }
 

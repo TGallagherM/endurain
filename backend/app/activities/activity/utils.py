@@ -99,6 +99,7 @@ ACTIVITY_ID_TO_NAME = {
     44: "Snow shoeing",
     45: "Inline skating",
     46: "HIIT",
+    47: "Jump rope",
     # Add other mappings as needed based on the full list in define_activity_type comments if required
     # "AlpineSki",
     # "BackcountrySki",
@@ -238,6 +239,8 @@ ACTIVITY_NAME_TO_ID.update(
         "hiit": 46,
         "high_intensity_interval_training": 46,
         "highintensityintervaltraining": 46,
+        "jump_rope": 47,
+        "jumprope": 47,
     }
 )
 
@@ -309,6 +312,7 @@ def transform_schema_activity_to_model_activity(
         hide_gear=activity.hide_gear,
         tracker_manufacturer=activity.tracker_manufacturer,
         tracker_model=activity.tracker_model,
+        total_cycles=activity.total_cycles,
     )
 
     return new_activity

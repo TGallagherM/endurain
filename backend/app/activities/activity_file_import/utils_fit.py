@@ -156,6 +156,7 @@ def create_activity_objects(
                 ),
                 tracker_model=(str(model) if (model := session_record["file_id"].get("product")) is not None else None),
                 **privacy_kwargs,
+                total_cycles=session_record["session"]["total_cycles"],
             )
 
             waypoints = {
@@ -507,6 +508,7 @@ def _handle_session_frame(frame, state: FitParseState) -> None:
         max_speed,
         workout_feeling,
         workout_rpe,
+        total_cycles,
     ) = parse_frame_session(frame)
 
     city, town, country = None, None, None
@@ -544,6 +546,7 @@ def _handle_session_frame(frame, state: FitParseState) -> None:
             "max_speed": max_speed,
             "workout_feeling": workout_feeling,
             "workout_rpe": workout_rpe,
+            "total_cycles": total_cycles,
         }
     )
 
@@ -756,6 +759,7 @@ def parse_frame_session(frame):
         get_value_from_frame(frame, "enhanced_max_speed"),
         get_value_from_frame(frame, "workout_feel"),
         get_value_from_frame(frame, "workout_rpe"),
+        get_value_from_frame(frame, "total_cycles"),
     )
 
 

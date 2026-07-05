@@ -88,6 +88,7 @@ class Activity(BaseModel):
         tracker_manufacturer: Device manufacturer name.
         tracker_model: Device model name.
         map_thumbnail_path: Path to the map thumbnail image.
+        total_cycles: Total number of cycles (e.g., pedal strokes) recorded.
     """
 
     model_config = ConfigDict(from_attributes=True)
@@ -149,6 +150,7 @@ class Activity(BaseModel):
     tracker_manufacturer: str | None = Field(default=None, max_length=250)
     tracker_model: str | None = Field(default=None, max_length=250)
     map_thumbnail_path: str | None = Field(default=None, max_length=500)
+    total_cycles: int | None = Field(default=None, ge=0)
 
 
 class ActivitySportStats(BaseModel):
