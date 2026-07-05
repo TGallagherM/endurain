@@ -117,8 +117,16 @@ async def fetch_and_process_activities_by_dates(
                 per_entry_kind=file_uploads.UploadKind.ACTIVITY,
             )
         except Exception as err:
+            # Include the HTTPException detail (error code + message)
+            # when available; `type(err).__name__` alone collapses
+            # every one of the nine failure modes in
+            # `_extract_validated_zip_sync` to the single string
+            # "HTTPException", making root-cause diagnosis impossible
+            # without reproduction (#749).
+            err_detail = getattr(err, "detail", None)
             core_logger.print_to_log(
-                f"User {user_id}: Garmin ZIP extraction failed for activity {activity_id}: {type(err).__name__}",
+                f"User {user_id}: Garmin ZIP extraction failed for activity {activity_id}: "
+                f"{type(err).__name__}" + (f" - {err_detail}" if err_detail is not None else ""),
                 "warning",
                 exc=err,
             )
@@ -128,18 +136,33 @@ async def fetch_and_process_activities_by_dates(
         file_uploads.safe_remove_within(output_file, base_dir=core_config.settings.FILES_DIR)
 
         for full_file_path in extracted_paths:
-            parsed_activities.extend(
-                await activities_utils.parse_and_store_activity_from_file(
-                    token_user_id=user_id,
-                    file_path=str(full_file_path),
-                    websocket_manager=ws_manager,
-                    db=db,
-                    from_garmin=True,
-                    garminconnect_gear=activity_gear,
-                    activity_name=activity_name,
-                )
-                or []
+            parsed_result = await activities_utils.parse_and_store_activity_from_file(
+                token_user_id=user_id,
+                file_path=str(full_file_path),
+                websocket_manager=ws_manager,
+                db=db,
+                from_garmin=True,
+                garminconnect_gear=activity_gear,
+                activity_name=activity_name,
             )
+            if parsed_result:
+                parsed_activities.extend(parsed_result)
+            else:
+                # parse_and_store_activity_from_file only moves the
+                # extracted file out of dest_dir on success. On
+                # failure (for non-bulk-import callers, which
+                # includes this Garmin sync path) the file is left in
+                # place, so the next sync cycle re-downloads the
+                # activity and extraction fails with
+                # ZIP_TARGET_EXISTS forever (#750). Clean it up here
+                # so the activity can be retried.
+                core_logger.print_to_log(
+                    f"User {user_id}: Failed to parse Garmin activity {activity_id} file "
+                    f"{full_file_path.name}; removing it to avoid a perpetual "
+                    "ZIP_TARGET_EXISTS failure loop on the next sync",
+                    "warning",
+                )
+                file_uploads.safe_remove_within(full_file_path, base_dir=core_config.settings.FILES_DIR)
 
     # Return the number of activities processed
     return parsed_activities if parsed_activities else None
