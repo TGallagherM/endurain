@@ -322,6 +322,72 @@ class TestUtilsFit:
         assert activity.elevation_gain == 250
         assert activity.elevation_loss == 240
 
+    def test_create_activity_objects_leaves_distance_zero_without_data(self):
+        """No session distance, no GPS track, no avg_speed → distance/pace stay 0."""
+        # Category A: an HR-only recording has nothing to derive distance from.
+        activities_list = utils_fit.create_activity_objects(
+            [_session_record(None)],
+            user_id=1,
+            user_privacy_settings=_privacy_settings(),
+        )
+
+        activity = activities_list[0]["activity"]
+        assert activity.distance == 0
+        assert activity.pace == 0
+
+    def test_create_activity_objects_derives_distance_from_avg_speed(self):
+        """Missing session distance falls back to avg_speed * total_timer_time."""
+        record = _session_record(None)
+        record["session"]["distance"] = None
+        record["session"]["avg_speed"] = 1.495
+        record["session"]["total_timer_time"] = 1890.0
+
+        activities_list = utils_fit.create_activity_objects(
+            [record],
+            user_id=1,
+            user_privacy_settings=_privacy_settings(),
+        )
+
+        activity = activities_list[0]["activity"]
+        assert activity.distance == round(1.495 * 1890.0)  # ~2826 m
+        assert activity.pace > 0
+
+    def test_create_activity_objects_derives_distance_from_gps_track(self):
+        """Missing session distance falls back to geodesic sum over the GPS track."""
+        record = _session_record(None)
+        record["session"]["distance"] = None
+        record["is_lat_lon_set"] = True
+        record["lat_lon_waypoints"] = [
+            {"time": datetime(2026, 6, 20, 8, 20, 3, tzinfo=UTC), "lat": 40.0, "lon": -3.0},
+            {"time": datetime(2026, 6, 20, 8, 25, 3, tzinfo=UTC), "lat": 40.01, "lon": -3.0},
+        ]
+
+        activities_list = utils_fit.create_activity_objects(
+            [record],
+            user_id=1,
+            user_privacy_settings=_privacy_settings(),
+        )
+
+        activity = activities_list[0]["activity"]
+        # ~0.01 deg of latitude ≈ 1.1 km.
+        assert 1000 < activity.distance < 1200
+        assert activity.pace > 0
+
+    def test_session_distance_takes_precedence_over_fallbacks(self):
+        """A real session distance is used as-is, ignoring the fallbacks."""
+        record = _session_record(None)
+        record["session"]["distance"] = 5000.0
+        record["session"]["avg_speed"] = 1.495
+        record["session"]["total_timer_time"] = 1890.0
+
+        activities_list = utils_fit.create_activity_objects(
+            [record],
+            user_id=1,
+            user_privacy_settings=_privacy_settings(),
+        )
+
+        assert activities_list[0]["activity"].distance == 5000
+
 
 class TestParseFrameSession:
     """Tests for parse_frame_session sub_sport → activity_type resolution."""

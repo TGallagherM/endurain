@@ -63,9 +63,24 @@ def create_activity_objects(
             if session_record["activity_name"] and session_record["activity_name"] != "Workout":
                 activity_name = session_record["activity_name"]
 
+            # Resolve the summary distance. FIT stores it on the session frame,
+            # but some sources omit total_distance even when the activity has a
+            # GPS track or an average speed. Fall back so distance (and the pace
+            # derived from it) are not left at zero when they are recoverable.
+            resolved_distance = session_record["session"]["distance"]
+            if not resolved_distance and session_record["is_lat_lon_set"]:
+                resolved_distance = activity_file_import_utils.compute_distance_from_waypoints(
+                    session_record["lat_lon_waypoints"]
+                )
+            if not resolved_distance:
+                avg_speed = session_record["session"]["avg_speed"]
+                timer_time = session_record["session"]["total_timer_time"]
+                if avg_speed and timer_time:
+                    resolved_distance = avg_speed * timer_time
+
             # Calculate elevation gain/loss, pace, average speed, and average power
             total_timer_time, pace = calculate_pace(
-                session_record["session"]["distance"],
+                resolved_distance,
                 session_record["session"]["total_timer_time"],
                 session_record["session"]["activity_type"],
                 session_record["split_summary"],
@@ -165,7 +180,7 @@ def create_activity_objects(
             activity = activities_schema.Activity(
                 user_id=user_id,
                 name=activity_name,
-                distance=(round(session_record["session"]["distance"]) if session_record["session"]["distance"] else 0),
+                distance=(round(resolved_distance) if resolved_distance else 0),
                 activity_type=activity_type,
                 start_time=session_record["session"]["first_waypoint_time"].strftime("%Y-%m-%dT%H:%M:%S"),
                 end_time=session_record["session"]["last_waypoint_time"].strftime("%Y-%m-%dT%H:%M:%S"),
