@@ -32,7 +32,10 @@ import {
   useUserActivitiesQuery,
   useUserActivityTypesQuery,
 } from '@/features/activities/composables/useActivities'
-import { ACTIVITY_METRIC_COLUMNS } from '@/features/activities/utils/activityListColumns'
+import {
+  ACTIVITY_METRIC_COLUMNS,
+  sortByToExtraColumn,
+} from '@/features/activities/utils/activityListColumns'
 import { ACTIVITY_SORT_OPTIONS } from '@/features/activities/utils/activitySortOptions'
 import { presentActivityType } from '@/features/activities/utils/activityType'
 
@@ -77,6 +80,14 @@ const debouncedSearch = ref(searchTerm.value)
 // Sort state, defaulting to newest first (mirrors v1).
 const sortBy = ref<ActivitySortBy>(parseSortByParam(route.query.sortBy))
 const sortOrder = ref<ActivitySortOrder>(parseSortOrderParam(route.query.sortOrder))
+
+// Calories/avg HR aren't part of the default headline columns, so sorting by
+// either added no visible column (issue #778); append the matching one so its
+// values are visible while that sort is active.
+const visibleColumns = computed(() => {
+  const extraColumn = sortByToExtraColumn(sortBy.value)
+  return extraColumn ? [...ACTIVITY_METRIC_COLUMNS, extraColumn] : ACTIVITY_METRIC_COLUMNS
+})
 
 // Page size follows the server's enforced `num_records_per_page` setting.
 const { recordsPerPage } = useRecordsPerPage()
@@ -351,7 +362,7 @@ useRouteQueryReplacement(activitiesQueryState)
             }}</span>
             <div class="flex shrink-0 items-baseline gap-6">
               <span
-                v-for="col in ACTIVITY_METRIC_COLUMNS"
+                v-for="col in visibleColumns"
                 :key="col.key"
                 :class="['text-caption', col.cellClass]"
               >
@@ -361,7 +372,7 @@ useRouteQueryReplacement(activitiesQueryState)
           </div>
           <ul class="divide-y divide-border">
             <li v-for="activity in activities" :key="activity.id">
-              <ActivityListItem :activity="activity" :units="units" />
+              <ActivityListItem :activity="activity" :units="units" :columns="visibleColumns" />
             </li>
           </ul>
         </div>

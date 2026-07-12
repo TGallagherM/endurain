@@ -41,7 +41,9 @@
       "pace": "Pace",
       "speed": "Speed",
       "paceSpeed": "Pace / Speed",
-      "elevation": "Elevation"
+      "elevation": "Elevation",
+      "calories": "Calories",
+      "avgHr": "Avg HR"
     },
     "empty": {
       "title": "No activities yet",

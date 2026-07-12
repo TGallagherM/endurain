@@ -24,6 +24,10 @@ import type { ActivitySummaryParams } from '@/features/summary/services/summary'
 import type { SummaryViewType } from '@/features/summary/types'
 
 import ActivityListItem from '@/features/activities/components/ActivityListItem.vue'
+import {
+  ACTIVITY_METRIC_COLUMNS,
+  sortByToExtraColumn,
+} from '@/features/activities/utils/activityListColumns'
 import SummaryBreakdownTable from '@/features/summary/components/SummaryBreakdownTable.vue'
 import SummaryTotals from '@/features/summary/components/SummaryTotals.vue'
 import SummaryTypeBreakdownTable from '@/features/summary/components/SummaryTypeBreakdownTable.vue'
@@ -269,6 +273,14 @@ const page = ref(1)
 const { recordsPerPage } = useRecordsPerPage()
 const sortBy = ref<ActivitySortBy>('start_time')
 const sortOrder = ref<ActivitySortOrder>('desc')
+
+// Calories/avg HR aren't part of the default headline columns, so sorting by
+// either added no visible column (issue #778); append the matching one so its
+// values are visible while that sort is active.
+const visibleColumns = computed(() => {
+  const extraColumn = sortByToExtraColumn(sortBy.value)
+  return extraColumn ? [...ACTIVITY_METRIC_COLUMNS, extraColumn] : ACTIVITY_METRIC_COLUMNS
+})
 
 /** Inclusive period bounds for the activities list (matches the summary period). */
 const activityRange = computed<{ startDate: string | null; endDate: string | null }>(() => {
@@ -543,7 +555,7 @@ function refetchList(): void {
 
         <ul class="divide-y divide-border">
           <li v-for="activity in activities" :key="activity.id">
-            <ActivityListItem :activity="activity" :units="units" />
+            <ActivityListItem :activity="activity" :units="units" :columns="visibleColumns" />
           </li>
         </ul>
       </ListPanel>
