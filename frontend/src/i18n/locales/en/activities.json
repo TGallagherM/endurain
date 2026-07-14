@@ -109,6 +109,10 @@
     "elevation": "Elevation",
     "strokeRate": "Stroke rate",
     "cycles": "Cycles",
+    "strokes": "Strokes",
+    "revolutions": "Revolutions",
+    "strides": "Strides",
+    "jumps": "Jumps",
     "hr": "Heart rate"
   },
   "workout": {
