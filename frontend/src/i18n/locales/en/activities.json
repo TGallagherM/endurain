@@ -65,6 +65,12 @@
     "label": "Activity route map",
     "recenter": "Recenter map"
   },
+  "dashboard": {
+    "teamTitle": "Team mileage",
+    "teamTotal": "Team total",
+    "error": "Couldn't load your team summary",
+    "empty": "No team mileage yet"
+  },
   "metrics": {
     "title": "Metrics",
     "time": "Time",

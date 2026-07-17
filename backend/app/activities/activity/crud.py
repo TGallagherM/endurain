@@ -29,9 +29,11 @@ import activities.activity.schema as activities_schema
 import activities.activity.utils as activities_utils
 import core.logger as core_logger
 import core.sanitization as core_sanitization
+import followers.crud as followers_crud
 import followers.models as followers_models
 import notifications.utils as notifications_utils
 import server_settings.utils as server_settings_utils
+import users.users.crud as users_crud
 import websocket.manager as websocket_manager
 
 # Mapping from frontend sort keys to model columns
@@ -301,6 +303,45 @@ def get_user_activities(
         )
     except SQLAlchemyError as err:
         raise _internal_server_error(err, "get_user_activities") from err
+
+
+def get_team_activity_dashboard(user_id: int, db: Session) -> activities_schema.TeamActivityDashboard:
+    """Build a cumulative team activity summary for the signed-in user and their accepted followees."""
+    try:
+        followings = followers_crud.get_accepted_following_by_user_id(user_id, db)
+        participant_ids = {user_id}
+        participant_ids.update(edge.following_id for edge in followings if edge.following_id is not None)
+
+        members: list[activities_schema.TeamActivityMember] = []
+        team_total_distance_meters = 0.0
+
+        for participant_id in sorted(participant_ids):
+            activities = get_user_activities(
+                participant_id,
+                db,
+                user_is_owner=participant_id == user_id,
+                requester_user_id=user_id,
+            ) or []
+            total_distance_meters = sum(float(activity.distance or 0.0) for activity in activities)
+            team_total_distance_meters += total_distance_meters
+
+            user_record = users_crud.get_user_by_id(participant_id, db)
+            members.append(
+                activities_schema.TeamActivityMember(
+                    user_id=participant_id,
+                    name=user_record.name if user_record else "",
+                    username=user_record.username if user_record else "",
+                    total_distance_meters=total_distance_meters,
+                )
+            )
+
+        members.sort(key=lambda member: member.total_distance_meters, reverse=True)
+        return activities_schema.TeamActivityDashboard(
+            team_total_distance_meters=team_total_distance_meters,
+            members=members,
+        )
+    except SQLAlchemyError as err:
+        raise _internal_server_error(err, "get_team_activity_dashboard") from err
 
 
 def get_user_activities_by_user_id_and_garminconnect_gear_set(

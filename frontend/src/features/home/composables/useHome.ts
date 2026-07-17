@@ -2,7 +2,7 @@ import { computed, type MaybeRefOrGetter, toValue } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 
-import type { Activity, ActivityStats } from '@/features/activities/types'
+import type { Activity, ActivityStats, TeamActivityDashboard } from '@/features/activities/types'
 import type { GoalProgress } from '@/features/goals/types'
 
 import { queryKeys } from '@/services/queryKeys'
@@ -11,6 +11,7 @@ import {
   type ActivityStatsTimeframe,
   fetchActivityStats,
   fetchFollowersActivities,
+  fetchTeamActivityDashboard,
   fetchUserActivities,
   fetchUserThisMonthActivityCount,
   fetchUserWeekActivities,
@@ -154,6 +155,20 @@ export function useUserMonthlyActivityCountQuery(userId: MaybeRefOrGetter<number
     queryKey: computed(() => queryKeys.activities.monthCount(id.value)),
     queryFn: ({ signal }) => fetchUserThisMonthActivityCount(id.value, signal),
     enabled: computed(() => isAuthenticated.value && id.value > 0),
+    staleTime: 5 * 60_000,
+  })
+}
+
+/**
+ * The signed-in user's cumulative team mileage dashboard.
+ */
+export function useTeamActivityDashboardQuery() {
+  const { isAuthenticated } = storeToRefs(useAuthStore())
+
+  return useQuery<TeamActivityDashboard>({
+    queryKey: queryKeys.activities.teamDashboard(),
+    queryFn: ({ signal }) => fetchTeamActivityDashboard(signal),
+    enabled: computed(() => isAuthenticated.value),
     staleTime: 5 * 60_000,
   })
 }

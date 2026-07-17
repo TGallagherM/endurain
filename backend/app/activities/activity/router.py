@@ -223,6 +223,24 @@ async def read_activities_user_activities_this_month_number(
 
 
 @router.get(
+    "/team/dashboard",
+    response_model=activities_schema.TeamActivityDashboard,
+)
+async def read_team_activity_dashboard(
+    _check_scopes: Annotated[Callable, Security(auth_dependencies.check_scopes, scopes=["activities:read"])],
+    token_user_id: Annotated[
+        int,
+        Depends(auth_dependencies.get_sub_from_access_token),
+    ],
+    db: Annotated[
+        Session,
+        Depends(core_database.get_db),
+    ],
+) -> activities_schema.TeamActivityDashboard:
+    return activities_crud.get_team_activity_dashboard(token_user_id, db)
+
+
+@router.get(
     "/gear/{gear_id}/list",
     response_model=(activities_schema.GearActivitiesListResponse),
     status_code=status.HTTP_200_OK,

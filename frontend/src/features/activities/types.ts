@@ -26,6 +26,12 @@ export type ActivityStats = Schemas['ActivityStats']
 /** Aggregated distance (m), time (s), and calories (kcal) for one sport. */
 export type ActivitySportStats = Schemas['ActivitySportStats']
 
+/** Team dashboard response from the backend. */
+export type TeamActivityDashboard = Schemas['TeamActivityDashboard']
+
+/** One team member's cumulative mileage summary. */
+export type TeamActivityMember = Schemas['TeamActivityMember']
+
 /** A sport key present in {@link ActivityStats}. */
 export type ActivitySportKey = keyof ActivityStats
 

@@ -20,6 +20,7 @@ import { useToasts } from '@/composables/useToasts'
 import { useInfiniteScroll } from '@/composables/useInfiniteScroll'
 import { useCurrentUser } from '@/features/auth/composables/useCurrentUser'
 import { useDisplayUnits } from '@/features/activities/composables/useActivityDetail'
+import { formatDistance } from '@/features/activities/utils/format'
 import { ACTIVITY_FILE_EXTENSIONS } from '@/features/upload/types'
 import { useUploadActivityFileMutation } from '@/features/upload/composables/useUpload'
 import {
@@ -27,6 +28,7 @@ import {
   useFollowersActivitiesFeed,
   useGoalResultsQuery,
   useRefreshActivitiesMutation,
+  useTeamActivityDashboardQuery,
   useUserActivitiesFeed,
 } from '@/features/home/composables/useHome'
 
@@ -48,6 +50,7 @@ const monthStats = useActivityStatsQuery(currentUserId, 'month')
 
 // --- Goal results (right) ---
 const goalResults = useGoalResultsQuery()
+const teamDashboard = useTeamActivityDashboardQuery()
 
 // --- Feed (center) ---
 type FeedScope = 'mine' | 'following'
@@ -223,6 +226,45 @@ function onRefresh(): void {
           :is-loading="weekStats.isLoading.value || monthStats.isLoading.value"
         />
       </div>
+
+      <Card v-if="currentUser" class="flex flex-col gap-3">
+        <div class="flex items-center justify-between gap-2">
+          <h2 class="text-card-heading">{{ t('activities.dashboard.teamTitle') }}</h2>
+        </div>
+        <div v-if="teamDashboard.isPending.value" class="space-y-2" aria-busy="true">
+          <Skeleton class="h-4 w-24" />
+          <Skeleton class="h-5 w-full" />
+        </div>
+        <div v-else-if="teamDashboard.isError.value" class="space-y-2">
+          <p class="text-hint">{{ t('activities.dashboard.error') }}</p>
+        </div>
+        <div v-else class="space-y-3">
+          <div class="rounded-input border border-border bg-muted/40 p-3">
+            <p class="text-caption">{{ t('activities.dashboard.teamTotal') }}</p>
+            <p class="text-item-title">
+              {{ formatDistance(teamDashboard.data.value?.team_total_distance_meters ?? 0, 1, units).value }}
+              {{ formatDistance(teamDashboard.data.value?.team_total_distance_meters ?? 0, 1, units).unit }}
+            </p>
+          </div>
+          <ul v-if="teamDashboard.data.value?.members?.length" class="space-y-2">
+            <li
+              v-for="member in teamDashboard.data.value.members"
+              :key="member.user_id"
+              class="flex items-center justify-between gap-2 rounded-input border border-border px-2 py-2"
+            >
+              <div class="min-w-0">
+                <p class="truncate text-body">{{ member.name || member.username }}</p>
+                <p v-if="member.username && member.name" class="truncate text-caption">@{{ member.username }}</p>
+              </div>
+              <span class="shrink-0 text-item-title">
+                {{ formatDistance(member.total_distance_meters, 1, units).value }}
+                {{ formatDistance(member.total_distance_meters, 1, units).unit }}
+              </span>
+            </li>
+          </ul>
+          <p v-else class="text-hint">{{ t('activities.dashboard.empty') }}</p>
+        </div>
+      </Card>
     </aside>
 
     <!-- Center feed -->

@@ -295,3 +295,14 @@ class TestThisMonthStats:
                 "/activities/user/1/thismonth/stats", headers={"Authorization": "Bearer x"}
             )
             assert resp.status_code == 200
+
+
+class TestTeamDashboard:
+    def test_success(self, mock_db):
+        with patch("activities.activity.router.activities_crud.get_team_activity_dashboard") as m:
+            m.return_value = {"team_total_distance_meters": 1500.0, "members": []}
+            resp = TestClient(_build_app(mock_db)).get(
+                "/activities/team/dashboard", headers={"Authorization": "Bearer x"}
+            )
+            assert resp.status_code == 200
+            assert resp.json()["team_total_distance_meters"] == 1500.0

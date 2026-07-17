@@ -226,6 +226,8 @@ export const queryKeys = {
      * @returns A query key for the user's this-month activity count.
      */
     monthCount: (userId: number) => ['activities', 'month-count', userId] as const,
+    /** The signed-in user's cumulative team mileage dashboard. */
+    teamDashboard: () => ['activities', 'team-dashboard'] as const,
     /**
      * A user's activities for a single ISO week (public-profile week browser).
      * Under the `list` prefix so an `all()` invalidation refetches it.

@@ -211,6 +211,26 @@ class ActivityStats(BaseModel):
     inline_skating: ActivitySportStats = Field(default_factory=ActivitySportStats)
 
 
+class TeamActivityMember(BaseModel):
+    """A single team member's cumulative distance summary."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    user_id: int = Field(default=0, ge=1)
+    name: str = Field(default="")
+    username: str = Field(default="")
+    total_distance_meters: float = Field(default=0.0, ge=0)
+
+
+class TeamActivityDashboard(BaseModel):
+    """Cumulative team activity distance for the authenticated user and their team."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    team_total_distance_meters: float = Field(default=0.0, ge=0)
+    members: list[TeamActivityMember] = Field(default_factory=list)
+
+
 class GearActivitiesListResponse(BaseModel):
     """
     Response model for paginated gear activities.

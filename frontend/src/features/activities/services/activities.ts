@@ -21,6 +21,7 @@ import type {
   ActivityWorkoutStepDto,
   HrZoneBucket,
   StreamWaypoint,
+  TeamActivityDashboard,
 } from '../types'
 
 /** Context controlling whether to hit the authenticated or public endpoints. */
@@ -483,6 +484,17 @@ export async function fetchUserThisMonthActivityCount(
     signal,
   })
   return count ?? 0
+}
+
+/**
+ * Fetches a cumulative team dashboard summarizing the signed-in user's distance
+ * together with the accepted-following members they are tracking.
+ */
+export async function fetchTeamActivityDashboard(signal?: AbortSignal): Promise<TeamActivityDashboard> {
+  const dashboard = await apiFetch<TeamActivityDashboard | null>('/activities/team/dashboard', {
+    signal,
+  })
+  return dashboard ?? { team_total_distance_meters: 0, members: [] }
 }
 
 /**
