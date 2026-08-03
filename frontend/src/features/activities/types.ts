@@ -27,10 +27,18 @@ export type ActivityStats = Schemas['ActivityStats']
 export type ActivitySportStats = Schemas['ActivitySportStats']
 
 /** Team dashboard response from the backend. */
-export type TeamActivityDashboard = Schemas['TeamActivityDashboard']
+export interface TeamActivityDashboard {
+  team_total_distance_meters: number
+  members: TeamActivityMember[]
+}
 
 /** One team member's cumulative mileage summary. */
-export type TeamActivityMember = Schemas['TeamActivityMember']
+export interface TeamActivityMember {
+  user_id: number
+  name: string | null
+  username: string | null
+  total_distance_meters: number
+}
 
 /** A sport key present in {@link ActivityStats}. */
 export type ActivitySportKey = keyof ActivityStats
