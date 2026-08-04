@@ -80,6 +80,17 @@ async function signOut(): Promise<void> {
         </RouterLink>
       </Card>
 
+      <!-- Team / Challenges -->
+      <Card padding="none" class="overflow-hidden">
+        <RouterLink
+          :to="{ name: 'challenges' }"
+          class="flex items-center gap-3 px-4 py-3 text-sm text-foreground hover:bg-accent hover:text-accent-foreground"
+        >
+          <Trophy class="size-4" />
+          <span>{{ t('nav.challenges') }}</span>
+        </RouterLink>
+      </Card>
+
       <!-- Settings / Profile -->
       <Card padding="none" class="overflow-hidden">
         <RouterLink
