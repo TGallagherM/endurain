@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, unref } from 'vue'
 import { Plus } from '@lucide/vue'
 
 import { Button } from '@/components/ui/button'
@@ -8,7 +8,7 @@ import { ListPanel } from '@/components/ui/list-panel'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useCurrentUser } from '@/features/auth/composables/useCurrentUser'
 import { formatDistance } from '@/features/activities/utils/format'
-import { useAuthStore } from '@/features/auth/stores/auth'
+import { useDisplayUnits } from '@/features/activities/composables/useActivityDetail'
 import {
   useChallengeMembersQuery,
   useChallengeMembershipStatusQuery,
@@ -18,10 +18,7 @@ import {
   useChallengeMembershipMutation,
 } from '@/features/challenges/composables/useChallenges'
 
-const authStore = useAuthStore()
-
-// Resolves 'imperial' or 'metric' from user profile
-const userUnits = computed(() => authStore.user?.unitSystem ?? 'metric')
+const units = useDisplayUnits()
 
 const selectedChallengeId = ref<number | null>(null)
 const createName = ref('')
@@ -67,11 +64,8 @@ function removeChallenge(challengeId: number): void {
 }
 
 function renderDistance(meters: number | null | undefined): string {
-  if (meters === null || meters === undefined) {
-    const defaultFormat = formatDistance(0, 1, userUnits.value)
-    return `${defaultFormat.value} ${defaultFormat.unit}`
-  }
-  const formatted = formatDistance(meters, 1, userUnits.value)
+  const distanceValue = meters ?? 0
+  const formatted = formatDistance(distanceValue, 1, unref(units))
   return `${formatted.value} ${formatted.unit}`
 }
 
