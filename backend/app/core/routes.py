@@ -69,6 +69,12 @@ router = APIRouter()
 
 # Router files (alphabetical order)
 router.include_router(
+    challenges_router.router,
+    prefix=core_config.ROOT_PATH + "/activities/challenges",
+    tags=["challenges"],
+    dependencies=[Depends(auth_dependencies.validate_access_token)],
+)
+router.include_router(
     activities_router.router,
     prefix=core_config.ROOT_PATH + "/activities",
     tags=["activities"],
@@ -79,12 +85,6 @@ router.include_router(
     prefix=core_config.ROOT_PATH + "/activities",
     tags=["activities"],
     dependencies=[Depends(auth_dependencies.validate_access_token_or_api_key)],
-)
-router.include_router(
-    challenges_router.router,
-    prefix=core_config.ROOT_PATH + "/activities/challenges",
-    tags=["challenges"],
-    dependencies=[Depends(auth_dependencies.validate_access_token)],
 )
 router.include_router(
     activity_exercise_titles_router.router,
