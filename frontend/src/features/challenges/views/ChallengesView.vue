@@ -7,6 +7,8 @@ import { EmptyState } from '@/components/ui/empty-state'
 import { ListPanel } from '@/components/ui/list-panel'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useCurrentUser } from '@/features/auth/composables/useCurrentUser'
+import { formatDistance } from '@/features/activities/utils/format'
+import { useAuthStore } from '@/features/auth/stores/auth'
 import {
   useChallengeMembersQuery,
   useChallengeMembershipStatusQuery,
@@ -15,6 +17,11 @@ import {
   useDeleteChallengeMutation,
   useChallengeMembershipMutation,
 } from '@/features/challenges/composables/useChallenges'
+
+const authStore = useAuthStore()
+
+// Resolves 'imperial' or 'metric' from user profile
+const userUnits = computed(() => authStore.user?.unitSystem ?? 'metric')
 
 const selectedChallengeId = ref<number | null>(null)
 const createName = ref('')
@@ -57,6 +64,15 @@ function createChallenge(): void {
 
 function removeChallenge(challengeId: number): void {
   deleteMutation.mutate(challengeId)
+}
+
+function renderDistance(meters: number | null | undefined): string {
+  if (meters === null || meters === undefined) {
+    const defaultFormat = formatDistance(0, 1, userUnits.value)
+    return `${defaultFormat.value} ${defaultFormat.unit}`
+  }
+  const formatted = formatDistance(meters, 1, userUnits.value)
+  return `${formatted.value} ${formatted.unit}`
 }
 
 function toggleMembership(challengeId: number, active: boolean): void {
@@ -104,7 +120,7 @@ function toggleMembership(challengeId: number, active: boolean): void {
             >
               <span class="text-item-title">{{ challenge.name }}</span>
               <span class="text-caption">{{ challenge.startDate }} → {{ challenge.endDate }}</span>
-              <span class="text-caption">{{ challenge.memberCount }} members · {{ challenge.totalDistanceMeters }} m</span>
+              <span class="text-caption">{{ challenge.memberCount }} members · {{ renderDistance(challenge.totalDistanceMeters) }}</span>
             </button>
             <div class="px-4 pb-3">
               <Button variant="outline" size="sm" @click="removeChallenge(challenge.id)">Delete</Button>
@@ -137,7 +153,7 @@ function toggleMembership(challengeId: number, active: boolean): void {
             <div>
               <h2 class="text-section-heading">{{ selectedChallenge.name }}</h2>
               <p class="text-body">{{ selectedChallenge.startDate }} → {{ selectedChallenge.endDate }}</p>
-              <p class="text-caption mt-2">Cumulative team distance: {{ selectedChallenge.totalDistanceMeters }} m</p>
+              <p class="text-caption mt-2">Cumulative team distance: {{ renderDistance(selectedChallenge.totalDistanceMeters) }}</p>
             </div>
             <Button
               variant="outline"
@@ -152,7 +168,7 @@ function toggleMembership(challengeId: number, active: boolean): void {
             <div v-for="member in members" :key="member.userId" class="flex items-center justify-between rounded-input border border-border px-3 py-2">
               <div>
                 <p class="text-item-title">{{ member.name ?? member.username ?? `User ${member.userId}` }}</p>
-                <p class="text-caption">{{ member.totalDistanceMeters }} m</p>
+                <p class="text-caption">{{ renderDistance(member.totalDistanceMeters) }}</p>
               </div>
             </div>
           </div>
