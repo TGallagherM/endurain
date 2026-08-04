@@ -39,7 +39,8 @@ export function useChallengeMembersQuery(challengeId: MaybeRefOrGetter<number | 
   const id = computed(() => toValue(challengeId))
 
   return useQuery<ChallengeMemberSummary[]>({
-    queryKey: computed(() => (id.value ? queryKeys.activities.challengeMembers(id.value) : queryKeys.activities.challenges())),
+    // queryKey: computed(() => (id.value ? queryKeys.activities.challengeMembers(id.value) : queryKeys.activities.challenges())),
+    queryKey: computed(() => queryKeys.activities.challengeMembers(id.value ?? 0)),
     queryFn: ({ signal }) => {
       const resolved = toValue(challengeId)
       if (resolved === null || resolved <= 0) {
@@ -67,10 +68,16 @@ export function useChallengeMembershipStatusQuery(
   const resolvedUserId = computed(() => toValue(userId))
 
   return useQuery<ChallengeMembershipStatus>({
+    // queryKey: computed(() =>
+    //   resolvedChallengeId.value && resolvedUserId.value
+    //     ? queryKeys.activities.challengeMembershipStatus(resolvedChallengeId.value, resolvedUserId.value)
+    //     : queryKeys.activities.challenges(),
+    // ),
     queryKey: computed(() =>
-      resolvedChallengeId.value && resolvedUserId.value
-        ? queryKeys.activities.challengeMembershipStatus(resolvedChallengeId.value, resolvedUserId.value)
-        : queryKeys.activities.challenges(),
+    queryKeys.activities.challengeMembershipStatus(
+        resolvedChallengeId.value ?? 0,
+        resolvedUserId.value ?? 0,
+      ),
     ),
     queryFn: ({ signal }) => {
       const challengeValue = toValue(challengeId)
