@@ -71,10 +71,15 @@ async def delete_challenge(
     response_model=list[challenges_schema.ChallengeMemberRead],
     status_code=status.HTTP_200_OK,
 )
+# async def read_challenge_members(
+#     challenge_id: int,
+#     _check_scopes: Annotated[Callable, Security(auth_dependencies.check_scopes, scopes=["activities:read"])],
+#     _validate_challenge_id: Annotated[Callable, Depends(users_dependencies.validate_user_id)],
+#     db: Annotated[Session, Depends(core_database.get_db)],
+# ) -> list[challenges_schema.ChallengeMemberRead]:
 async def read_challenge_members(
     challenge_id: int,
     _check_scopes: Annotated[Callable, Security(auth_dependencies.check_scopes, scopes=["activities:read"])],
-    _validate_challenge_id: Annotated[Callable, Depends(users_dependencies.validate_user_id)],
     db: Annotated[Session, Depends(core_database.get_db)],
 ) -> list[challenges_schema.ChallengeMemberRead]:
     """Return the participating members and their challenge-window mileage."""
