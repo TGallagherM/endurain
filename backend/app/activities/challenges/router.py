@@ -15,8 +15,13 @@ import users.users.dependencies as users_dependencies
 router = APIRouter()
 
 
+# @router.get(
+#     "/",
+#     response_model=list[challenges_schema.ChallengeRead],
+#     status_code=status.HTTP_200_OK,
+# )
 @router.get(
-    "/",
+    "",
     response_model=list[challenges_schema.ChallengeRead],
     status_code=status.HTTP_200_OK,
 )
