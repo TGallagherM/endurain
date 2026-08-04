@@ -36,7 +36,7 @@ async def read_challenges(
 
 
 @router.post(
-    "/",
+    "",
     response_model=challenges_schema.ChallengeRead,
     status_code=status.HTTP_201_CREATED,
 )
