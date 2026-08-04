@@ -228,6 +228,13 @@ export const queryKeys = {
     monthCount: (userId: number) => ['activities', 'month-count', userId] as const,
     /** The signed-in user's cumulative team mileage dashboard. */
     teamDashboard: () => ['activities', 'team-dashboard'] as const,
+    /** The signed-in user's fitness challenge list and membership state. */
+    challenges: () => ['activities', 'challenges'] as const,
+    /** The roster for one challenge. */
+    challengeMembers: (challengeId: number) => ['activities', 'challenges', 'members', challengeId] as const,
+    /** Whether a specific user is joined to a specific challenge. */
+    challengeMembershipStatus: (challengeId: number, userId: number) =>
+      ['activities', 'challenges', 'membership-status', challengeId, userId] as const,
     /**
      * A user's activities for a single ISO week (public-profile week browser).
      * Under the `list` prefix so an `all()` invalidation refetches it.

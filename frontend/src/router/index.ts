@@ -80,6 +80,12 @@ const router = createRouter({
       meta: { requiresAuth: true, cardless: true },
     },
     {
+      path: '/challenges',
+      name: 'challenges',
+      component: () => import('@/features/challenges/views/ChallengesView.vue'),
+      meta: { requiresAuth: true, cardless: true },
+    },
+    {
       path: '/gears',
       name: 'gears',
       component: () => import('@/features/gears/views/GearsView.vue'),

@@ -10,6 +10,7 @@ from core.database import Base
 
 if TYPE_CHECKING:
     from activities.activity.models import Activity
+    from activities.challenges.models import Challenge, ChallengeMember
     from auth.api_keys.models import UsersApiKeys
     from auth.credentials.models import LocalCredential
     from auth.identity_providers.link_tokens.models import IdpLinkToken
@@ -230,6 +231,16 @@ class Users(Base):
     activities: Mapped[list["Activity"]] = relationship(
         back_populates="users",
         cascade="all, delete-orphan",
+    )
+    created_challenges: Mapped[list["Challenge"]] = relationship(
+        back_populates="creator",
+        cascade="all, delete-orphan",
+        foreign_keys="Challenge.created_by_user_id",
+    )
+    challenge_memberships: Mapped[list["ChallengeMember"]] = relationship(
+        back_populates="user",
+        cascade="all, delete-orphan",
+        foreign_keys="ChallengeMember.user_id",
     )
     followers: Mapped[list["Follower"]] = relationship(
         back_populates="following",
