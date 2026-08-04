@@ -1,6 +1,6 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Activity, Bike, Calendar, Heart, List, Search, type LucideIcon } from '@lucide/vue'
+import { Activity, Bike, Calendar, Heart, List, Search, Trophy, Users, type LucideIcon } from '@lucide/vue'
 
 import { useAuthStore } from '@/features/auth/stores/auth'
 
@@ -41,6 +41,14 @@ export function useNavigation() {
             children: [
               { name: 'activities', label: t('nav.activitiesList'), icon: List },
               { name: 'summary', label: t('nav.summary'), icon: Calendar },
+            ],
+          },
+          {
+            name: 'team',
+            label: t('nav.team'),
+            icon: Users,
+            children: [
+              { name: 'challenges', label: t('nav.challenges'), icon: Trophy },
             ],
           },
           { name: 'gears', label: t('nav.gear'), icon: Bike },
