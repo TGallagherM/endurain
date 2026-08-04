@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { RouterLink, useRouter, type RouteLocationRaw } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Activity, Calendar, LogOut, Search, Settings, User } from '@lucide/vue'
+import { Activity, Calendar, LogOut, Search, Settings, Trophy, User } from '@lucide/vue'
 
 import LocaleSwitcher from '@/components/LocaleSwitcher.vue'
 import ThemeToggle from '@/components/ThemeToggle.vue'
