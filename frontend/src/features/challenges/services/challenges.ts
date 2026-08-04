@@ -50,24 +50,22 @@ export function mapChallengeMember(dto: {
 }
 
 /**
- * Fetches the full challenge list for the authenticated user.
- *
- * @param signal - Optional abort signal.
- * @returns The challenge summary list.
+ * Revision History:
+ * Rev 1.0 - Initial fetchChallenges implementation
+ * Rev 1.1 - Added array validation guard on apiFetch response to prevent non-array returns
  */
 export async function fetchChallenges(signal?: AbortSignal): Promise<ChallengeSummary[]> {
-  const dtos = await apiFetch<
-    {
-      id: number
-      name: string
-      start_date: string
-      end_date: string
-      created_by_user_id: number
-      member_count: number
-      total_distance_meters: number
-    }[] | null
-  >('/activities/challenges', { signal })
-  return (dtos ?? []).map(mapChallenge)
+  const response = await apiFetch<unknown>('/activities/challenges', { signal })
+
+  const rawList = Array.isArray(response)
+    ? response
+    : Array.isArray((response as any)?.data)
+      ? (response as any).data
+      : Array.isArray((response as any)?.items)
+        ? (response as any).items
+        : []
+
+  return rawList.map(mapChallenge)
 }
 
 /**
